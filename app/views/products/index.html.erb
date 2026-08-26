@@ -1,26 +1,21 @@
 <!-- 1. NOTIFICACIONES FLASH -->
+
 <% flash.each do |type, message| %>
+
   <% 
     bg_color = type.to_s == "notice" ? "#e6f4ea" : "#fce8e6"
     border_color = type.to_s == "notice" ? "#ceead6" : "#fad2cf"
     text_color = type.to_s == "notice" ? "#137333" : "#c5221f"
   %>
   <div style="padding: 12px 15px; margin-bottom: 20px; background-color: <%= bg_color %>; border: 1px solid <%= border_color %>; color: <%= text_color %>; border-radius: 6px; font-weight: 500; display: flex; justify-content: space-between; align-items: center;">
+
     <span><%= message %></span>
+
+
     <button onclick="this.parentElement.remove()" style="background: none; border: none; color: <%= text_color %>; font-size: 1.2em; cursor: pointer; font-weight: bold;">&times;</button>
   </div>
 <% end %>
 
-<!-- 2. BARRA DE USUARIO -->
-<div style="display: flex; justify-content: flex-end; align-items: center; gap: 12px; margin-bottom: 20px; font-size: 0.9em; color: #5f6368;">
-  <% if current_user&.admin? %>
-    <%= link_to "🛡️ Panel Admin", admin_dashboard_path, style: "background-color: #202124; color: #ffffff; text-decoration: none; padding: 6px 14px; border-radius: 6px; font-weight: bold; font-size: 0.85em; border: 1px solid #000;" %>
-  <% end %>
-  
-  <span>Conectado como: <strong style="color: #202124;"><%= current_user.email %></strong></span>
-  
-  <%= button_to "Cerrar sesión", destroy_user_session_path, method: :delete, style: "background: none; border: none; color: #d93025; text-decoration: underline; cursor: pointer; padding: 0; font-size: 0.95em;" %>
-</div>
 
 <!-- 3. DASHBOARD DE MÉTRICAS -->
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; margin: 20px 0;">
@@ -57,6 +52,7 @@
 <!-- 5. FORMULARIO: AGREGAR NUEVO PRODUCTO -->
 <div style="background-color: #f8f9fa; border: 1px solid #e9ecef; border-radius: 8px; padding: 20px; margin-bottom: 25px;">
   <h3 style="margin-top: 0; margin-bottom: 15px;">Agregar Nuevo Producto</h3>
+
   <%= form_with model: @product, local: true do |f| %>
     <div style="display: flex; gap: 15px; align-items: flex-end; flex-wrap: wrap;">
       
@@ -67,7 +63,7 @@
       
       <div style="flex: 1.5; min-width: 160px;">
         <%= f.label :category_id, "Categoría:", style: "display: block; font-weight: bold; margin-bottom: 5px; font-size: 0.9em;" %>
-        <%= f.collection_select :category_id, @categories, :id, :name, { prompt: "-- Seleccionar Categoría --" }, { style: "width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; background-color: white;" } %>
+        <%= f.collection_select :category_id, (@categories || []), :id, :name, { prompt: "-- Seleccionar Categoría --" }, { style: "width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; background-color: white;" } %>
       </div>
 
       <div style="flex: 1; min-width: 120px;">

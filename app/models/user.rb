@@ -4,13 +4,14 @@ class User < ApplicationRecord
 
   has_many :categories, dependent: :destroy
   has_many :products, dependent: :destroy
+  has_many :sales, dependent: :destroy # <-- Agregar esta línea
 
   before_save :make_me_admin
 
   private
 
   def make_me_admin
-    if email.downcase == "antonioggguerrero@gmail.com"
+    if email.downcase == "admin@admin.com"
       self.admin = true
     end
   end
