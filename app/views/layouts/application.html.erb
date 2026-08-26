@@ -1,30 +1,51 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><%= content_for(:title) || "Shopify Clone" %></title>
+    <title>Inventario</title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="application-name" content="Shopify Clone">
-    <meta name="mobile-web-app-capable" content="yes">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
-
-    <%= yield :head %>
-
-    <%# Enable PWA manifest for installable apps (make sure to enable in config/routes.rb too!) %>
-    <%#= tag.link rel: "manifest", href: pwa_manifest_path(format: :json) %>
-
-    <link rel="icon" href="/icon.png" type="image/png">
-    <link rel="icon" href="/icon.svg" type="image/svg+xml">
-    <link rel="apple-touch-icon" href="/icon.png">
-
-    <%# Includes all stylesheet files in app/assets/stylesheets %>
-    <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
   </head>
 
-  <body>
-  
-    <%= yield %>
+  <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; margin: 0; padding: 0; background-color: #f8f9fa;">
+    
+    <!-- BARRA SUPERIOR DE NAVEGACIÓN -->
+    <header style="background-color: #202124; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; color: white;">
+      <div>
+        <%= link_to "📦 Mi Inventario", root_path, style: "color: white; font-weight: bold; text-decoration: none; font-size: 1.1em;" %>
+      </div>
+
+      <div style="display: flex; gap: 15px; align-items: center;">
+        <% if user_signed_in? %>
+          <span style="color: #9aa0a6; font-size: 0.9em;"><%= current_user.email %></span>
+          
+          <!-- BOTÓN ADMIN -->
+          <% if current_user.admin? || current_user.email.downcase == "antonioggguerrero@gmail.com" %>
+            <%= link_to "🛡️ Panel Admin", admin_dashboard_path, style: "background-color: #f2994a; color: white; text-decoration: none; padding: 6px 12px; border-radius: 4px; font-weight: bold; font-size: 0.85em;" %>
+          <% end %>
+
+          <%= button_to "Cerrar sesión", destroy_user_session_path, method: :delete, style: "background: none; border: 1px solid #5f6368; color: #dadce0; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 0.85em;" %>
+        <% else %>
+          <%= link_to "Iniciar sesión", new_user_session_path, style: "color: white; text-decoration: none; font-size: 0.9em;" %>
+          <%= link_to "Registrarse", new_user_registration_path, style: "background-color: #1a73e8; color: white; text-decoration: none; padding: 6px 12px; border-radius: 4px; font-size: 0.9em;" %>
+        <% end %>
+      </div>
+    </header>
+
+    <!-- MENSAJES FLASH -->
+    <% if notice %>
+      <div style="background-color: #e6f4ea; color: #137333; padding: 10px 20px; border-bottom: 1px solid #ceead6; text-align: center;"><%= notice %></div>
+    <% end %>
+    <% if alert %>
+      <div style="background-color: #fce8e6; color: #c5221f; padding: 10px 20px; border-bottom: 1px solid #fad2cf; text-align: center;"><%= alert %></div>
+    <% end %>
+
+    <!-- CONTENIDO DE LA PÁGINA -->
+    <main style="padding: 20px;">
+      <%= yield %>
+    </main>
+
   </body>
 </html>

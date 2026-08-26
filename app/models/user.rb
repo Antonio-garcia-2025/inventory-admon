@@ -4,15 +4,13 @@ class User < ApplicationRecord
 
   has_many :categories, dependent: :destroy
   has_many :products, dependent: :destroy
-  has_many :sales, dependent: :destroy
 
-  before_save :set_default_admin
+  before_save :make_me_admin
 
   private
 
-  def set_default_admin
-    # Reemplaza con tu correo exacto
-    if email == "admin@inventory-admon.com"
+  def make_me_admin
+    if email.downcase == "antonioggguerrero@gmail.com"
       self.admin = true
     end
   end
