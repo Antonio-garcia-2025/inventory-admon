@@ -121,6 +121,7 @@ GEM
     erubi (1.13.1)
     et-orbi (1.4.0)
       tzinfo
+    ffi (1.17.4-aarch64-linux-gnu)
     ffi (1.17.4-x64-mingw-ucrt)
     ffi (1.17.4-x86_64-linux-gnu)
     fiddle (1.1.8)
@@ -195,6 +196,8 @@ GEM
       net-protocol
     net-ssh (7.3.3)
     nio4r (2.7.5)
+    nokogiri (1.19.4-aarch64-linux-gnu)
+      racc (~> 1.4)
     nokogiri (1.19.4-x64-mingw-ucrt)
       racc (~> 1.4)
     nokogiri (1.19.4-x86_64-linux-gnu)
@@ -205,6 +208,9 @@ GEM
     parser (3.3.11.1)
       ast (~> 2.4.1)
       racc
+    pg (1.6.3-aarch64-linux)
+    pg (1.6.3-x64-mingw-ucrt)
+    pg (1.6.3-x86_64-linux)
     pp (0.6.4)
       prettyprint
     prettyprint (0.2.0)
@@ -330,6 +336,7 @@ GEM
       fugit (~> 1.11)
       railties (>= 7.1)
       thor (>= 1.3.1)
+    sqlite3 (2.9.5-aarch64-linux-gnu)
     sqlite3 (2.9.5-x64-mingw-ucrt)
     sqlite3 (2.9.5-x86_64-linux-gnu)
     sshkit (1.25.0)
@@ -343,6 +350,7 @@ GEM
       railties (>= 6.0.0)
     thor (1.5.0)
     thruster (0.1.22)
+    thruster (0.1.22-aarch64-linux)
     thruster (0.1.22-x86_64-linux)
     timeout (0.6.1)
     tsort (0.2.0)
@@ -374,6 +382,7 @@ GEM
     zeitwerk (2.8.2)
 
 PLATFORMS
+  aarch64-linux
   x64-mingw-ucrt
   x86_64-linux
 
@@ -390,6 +399,7 @@ DEPENDENCIES
   importmap-rails
   jbuilder
   kamal
+  pg
   propshaft
   puma (>= 5.0)
   rails (~> 8.1.3)
@@ -398,7 +408,7 @@ DEPENDENCIES
   solid_cable
   solid_cache
   solid_queue
-  sqlite3 (>= 2.1)
+  sqlite3
   stimulus-rails
   thruster
   turbo-rails
@@ -444,6 +454,7 @@ CHECKSUMS
   erb (6.0.4) sha256=38e3803694be357fe2bfe312487c74beaf9fb4e5beb3e22498952fe1645b95d9
   erubi (1.13.1) sha256=a082103b0885dbc5ecf1172fede897f9ebdb745a4b97a5e8dc63953db1ee4ad9
   et-orbi (1.4.0) sha256=6c7e3c90779821f9e3b324c5e96fda9767f72995d6ae435b96678a4f3e2de8bc
+  ffi (1.17.4-aarch64-linux-gnu) sha256=b208f06f91ffd8f5e1193da3cae3d2ccfc27fc36fba577baf698d26d91c080df
   ffi (1.17.4-x64-mingw-ucrt) sha256=f6ff9618cfccc494138bddade27aa06c74c6c7bc367a1ea1103d80c2fcb9ed35
   ffi (1.17.4-x86_64-linux-gnu) sha256=9d3db14c2eae074b382fa9c083fe95aec6e0a1451da249eab096c34002bc752d
   fiddle (1.1.8) sha256=7fa8ee3627271497f3add5503acdbc3f40b32f610fc1cf49634f083ef3f32eee
@@ -476,12 +487,16 @@ CHECKSUMS
   net-smtp (0.5.1) sha256=ed96a0af63c524fceb4b29b0d352195c30d82dd916a42f03c62a3a70e5b70736
   net-ssh (7.3.3) sha256=831def58b2c51dcef66ec00d29397d4f210de89c19fe78f95873ca30f386e86a
   nio4r (2.7.5) sha256=6c90168e48fb5f8e768419c93abb94ba2b892a1d0602cb06eef16d8b7df1dca1
+  nokogiri (1.19.4-aarch64-linux-gnu) sha256=1269fb644a6de405057a53dd5c762b1209b43ca7424f839454d3dbc677c31a8f
   nokogiri (1.19.4-x64-mingw-ucrt) sha256=051da97b8eccfdb5444fed40246a35e10d7298b9efe759b4cd25455ea04c587e
   nokogiri (1.19.4-x86_64-linux-gnu) sha256=379fae440b28915e3f19d752ce2dcf8465ed2b2fbefd2a7ca0dd497bc981a06a
   orm_adapter (0.5.0) sha256=aa5d0be5d540cbb46d3a93e88061f4ece6a25f6e97d6a47122beb84fe595e9b9
   ostruct (0.6.3) sha256=95a2ed4a4bd1d190784e666b47b2d3f078e4a9efda2fccf18f84ddc6538ed912
   parallel (2.1.0) sha256=b35258865c2e31134c5ecb708beaaf6772adf9d5efae28e93e99260877b09356
   parser (3.3.11.1) sha256=d17ace7aabe3e72c3cc94043714be27cc6f852f104d81aa284c2281aecc65d54
+  pg (1.6.3-aarch64-linux) sha256=0698ad563e02383c27510b76bf7d4cd2de19cd1d16a5013f375dd473e4be72ea
+  pg (1.6.3-x64-mingw-ucrt) sha256=cdff974cbde6935e07b8f5cc3c2af7d320bc5263bde06acaae08302194ebf5e1
+  pg (1.6.3-x86_64-linux) sha256=5d9e188c8f7a0295d162b7b88a768d8452a899977d44f3274d1946d67920ae8d
   pp (0.6.4) sha256=dfcb0fce700c41456265922884f9fe195d7fbb0674a3578e6c0f69588e82b570
   prettyprint (0.2.0) sha256=2bc9e15581a94742064a3cc8b0fb9d45aae3d03a1baa6ef80922627a0766f193
   prism (1.9.0) sha256=7b530c6a9f92c24300014919c9dcbc055bf4cdf51ec30aed099b06cd6674ef85
@@ -519,12 +534,14 @@ CHECKSUMS
   solid_cable (4.0.0) sha256=8379680ef6bf36e195eb876a6306ea290f87d5fa10bc4a757bc2a918f83229b5
   solid_cache (1.0.10) sha256=bc05a2fb3ac78a6f43cbb5946679cf9db67dd30d22939ededc385cb93e120d41
   solid_queue (1.4.0) sha256=e6a18d196f0b27cb6e3c77c5b31258b05fb634f8ed64fb1866ed164047216c2a
+  sqlite3 (2.9.5-aarch64-linux-gnu) sha256=78075b6337d3d182c6d2b4691049ed45cd220826160c9ea18946bf6a1de200dc
   sqlite3 (2.9.5-x64-mingw-ucrt) sha256=b00d5697994ee8589b6096694a2130aa5567db64373baca55ea98c9bf958f46a
   sqlite3 (2.9.5-x86_64-linux-gnu) sha256=233dbcb6714148dd23bc5aeb33e8efd6eac974969564ddd5794c23d5f52b231e
   sshkit (1.25.0) sha256=c8c6543cdb60f91f1d277306d585dd11b6a064cb44eab0972827e4311ff96744
   stimulus-rails (1.3.4) sha256=765676ffa1f33af64ce026d26b48e8ffb2e0b94e0f50e9119e11d6107d67cb06
   thor (1.5.0) sha256=e3a9e55fe857e44859ce104a84675ab6e8cd59c650a49106a05f55f136425e73
   thruster (0.1.22) sha256=f34fb82bd3e31570ae8f8b930e484f9e1db7b080cbc993d49090b161879c3e05
+  thruster (0.1.22-aarch64-linux) sha256=6c306241e8ff8912fb26705a15cbb7b44a4dfcedd59fa890b2c72811f15cfa0e
   thruster (0.1.22-x86_64-linux) sha256=b96436be7f0854db632f421b4a53b795429a0bc95c15c2e1c1a7a6fdd1ed090f
   timeout (0.6.1) sha256=78f57368a7e7bbadec56971f78a3f5ecbcfb59b7fcbb0a3ed6ddc08a5094accb
   tsort (0.2.0) sha256=9650a793f6859a43b6641671278f79cfead60ac714148aabe4e3f0060480089f
