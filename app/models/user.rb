@@ -2,17 +2,18 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
 
+  has_many :categories, dependent: :destroy
   has_many :products, dependent: :destroy
   has_many :sales, dependent: :destroy
-  has_many :categories, dependent: :destroy
 
-  after_create :seed_default_categories
+  before_save :set_default_admin
 
   private
-  def seed_default_categories
-    default_categories = ['Electronics', 'Books', 'Clothing', 'Home & Kitchen', 'Sports & Outdoors']
-    default_categories.each do |category_name|
-      self.categories.create(name: category_name)
+
+  def set_default_admin
+    # Reemplaza con tu correo exacto
+    if email == "admin@inventory-admon.com"
+      self.admin = true
     end
   end
 end
