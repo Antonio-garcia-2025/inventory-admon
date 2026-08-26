@@ -1,4 +1,4 @@
-# Shopify — Inventory & Sales Management
+# inventory — Inventory & Sales Management
 
 > [Leer en Español](README.es.md)
 
