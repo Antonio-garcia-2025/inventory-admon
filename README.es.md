@@ -1,4 +1,4 @@
-# 🛍️ Shopify — Gestión de Inventario y Ventas
+# inventory — Gestión de Inventario y Ventas
 
 > [Read in English](README.md)
 
