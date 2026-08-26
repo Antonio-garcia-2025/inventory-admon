@@ -31,7 +31,7 @@ Rails.application.configure do
   config.active_support.report_deprecations = false
 
   # Usar almacenamiento en memoria sin requerir bases de datos adicionales
-  config.cache_store = :memory_store, { size: 64.megabytes }
+  config.cache_store = :memory_store
 
   # Usar el adaptador async para tareas en segundo plano
   config.active_job.queue_adapter = :async
