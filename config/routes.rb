@@ -1,11 +1,19 @@
 Rails.application.routes.draw do
   devise_for :users
 
-  resources :products, only: [:index, :create, :edit, :update, :destroy] do
-      member do
-        post :sell
-        end
+  # Panel de administración privado
+  namespace :admin do
+    get 'dashboard', to: 'dashboard#index'
+    delete 'users/:id', to: 'dashboard#destroy_user', as: 'destroy_user'
   end
-  
-  root 'products#index'
+
+  # Rutas de productos y ventas
+  resources :products do
+    member do
+      post :sell
+    end
+  end
+
+  # Ruta principal de la aplicación
+  root "products#index"
 end

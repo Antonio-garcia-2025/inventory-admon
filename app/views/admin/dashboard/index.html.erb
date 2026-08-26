@@ -1,0 +1,39 @@
+<!-- TABLA COMPARATIVA DE VENDEDORES -->
+  <h3 style="margin-bottom: 12px; color: #202124;">Desempeño por Vendedor</h3>
+  <table border="1" cellpadding="10" style="border-collapse: collapse; width: 100%; border: 1px solid #e0e0e0; text-align: left; background-color: white;">
+    <thead>
+      <tr style="background-color: #202124; color: white;">
+        <th>Vendedor (Email)</th>
+        <th>Fecha Registro</th>
+        <th style="text-align: center;">Productos</th>
+        <th style="text-align: center;">Stock Total</th>
+        <th style="text-align: center;">Ventas</th>
+        <th style="text-align: right;">Ingresos</th>
+        <th style="text-align: center;">Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @sellers.each do |seller| %>
+        <tr style="border-bottom: 1px solid #eee;">
+          <td>
+            <strong><%= seller[:email] %></strong>
+            <% if seller[:email] == current_user.email %>
+              <span style="background-color: #008060; color: white; padding: 2px 6px; border-radius: 4px; font-size: 0.75em; margin-left: 6px;">Tú (Admin)</span>
+            <% end %>
+          </td>
+          <td style="color: #5f6368; font-size: 0.9em;"><%= seller[:created_at].strftime("%d/%m/%Y") %></td>
+          <td style="text-align: center;"><%= seller[:products_count] %></td>
+          <td style="text-align: center;"><%= seller[:total_stock] %> unidades</td>
+          <td style="text-align: center; font-weight: bold;"><%= seller[:sales_count] %></td>
+          <td style="text-align: right; color: #137333; font-weight: bold; font-size: 1.05em;"><%= number_to_currency(seller[:total_earnings]) %></td>
+          <td style="text-align: center;">
+            <% if seller[:email] != current_user.email %>
+              <%= button_to "Eliminar cuenta", admin_destroy_user_path(seller[:id]), method: :delete, data: { turbo_confirm: "¿Estás seguro de eliminar permanentemente a #{seller[:email]} y todos sus productos/ventas?" }, style: "background-color: #d93025; color: white; border: none; padding: 6px 12px; border-radius: 4px; font-size: 0.85em; font-weight: bold; cursor: pointer;" %>
+            <% else %>
+              <span style="color: #80868b; font-size: 0.85em; font-style: italic;">Inmune</span>
+            <% end %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>

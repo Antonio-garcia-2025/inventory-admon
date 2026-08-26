@@ -12,12 +12,15 @@
 <% end %>
 
 <!-- 2. BARRA DE USUARIO -->
-<div style="text-align: right; margin-bottom: 15px; font-size: 0.9em; color: #5f6368;">
-  Conectado como: <strong style="color: #202124;"><%= current_user.email %></strong> | 
-  <%= button_to "Cerrar sesión", destroy_user_session_path, method: :delete, style: "background: none; border: none; color: #d93025; text-decoration: underline; cursor: pointer; display: inline; padding: 0; font-size: 0.95em;" %>
+<div style="display: flex; justify-content: flex-end; align-items: center; gap: 12px; margin-bottom: 20px; font-size: 0.9em; color: #5f6368;">
+  <% if current_user&.admin? %>
+    <%= link_to "🛡️ Panel Admin", admin_dashboard_path, style: "background-color: #202124; color: #ffffff; text-decoration: none; padding: 6px 14px; border-radius: 6px; font-weight: bold; font-size: 0.85em; border: 1px solid #000;" %>
+  <% end %>
+  
+  <span>Conectado como: <strong style="color: #202124;"><%= current_user.email %></strong></span>
+  
+  <%= button_to "Cerrar sesión", destroy_user_session_path, method: :delete, style: "background: none; border: none; color: #d93025; text-decoration: underline; cursor: pointer; padding: 0; font-size: 0.95em;" %>
 </div>
-
-<h1 style="margin-top: 0; color: #202124;">Panel de Gestión de Productos</h1>
 
 <!-- 3. DASHBOARD DE MÉTRICAS -->
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; margin: 20px 0;">
