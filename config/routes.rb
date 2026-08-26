@@ -3,6 +3,7 @@ Rails.application.routes.draw do
 
   namespace :admin do
     get 'dashboard', to: 'dashboard#index'
+    delete 'users/:id', to: 'dashboard#destroy_user', as: :destroy_user
   end
 
   resources :products do
@@ -12,3 +13,4 @@ Rails.application.routes.draw do
   end
 
   root "products#index"
+end
