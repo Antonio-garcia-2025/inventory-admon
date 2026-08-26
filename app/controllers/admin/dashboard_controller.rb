@@ -4,37 +4,32 @@ module Admin
     before_action :require_admin!
 
     def index
-      # Métricas Globales
-      @total_platform_revenue = Sale.sum(:price)
-      @total_platform_sales_count = Sale.count
       @total_sellers_count = User.count
       @total_products_count = Product.count
+      @total_inventory_stock = Product.sum(:stock)
 
-      # Desglose por vendedor
       @sellers = User.all.map do |seller|
         {
           id: seller.id,
           email: seller.email,
           created_at: seller.created_at,
           products_count: seller.products.count,
-          total_stock: seller.products.sum(:stock),
-          sales_count: seller.sales.count,
-          total_earnings: seller.sales.sum(:price)
+          total_stock: seller.products.sum(:stock)
         }
-      end.sort_by { |s| -s[:total_earnings] }
+      end
     end
 
     def destroy_user
-        @user_to_delate = User.find(params[:id])
-        if @user_to_delat = current_user
-            redirect_to admin_dashboard_path, alert: "No puedes eliminar tu propia cuenta." 
-        else 
-            user_email = @user_to_delate.email
-            @user_to_delate.destroy
-            redirect_to admin_dashboard_path, notice: "Usuario #{user_email} eliminado exitosamente."
-        end
+      @user_to_delete = User.find(params[:id])
+
+      if @user_to_delete == current_user
+        redirect_to admin_dashboard_path, alert: "No puedes eliminar tu propia cuenta de Administrador."
+      else
+        user_email = @user_to_delete.email
+        @user_to_delete.destroy
+        redirect_to admin_dashboard_path, notice: "La cuenta de #{user_email} ha sido eliminada."
+      end
     end
-    
 
     private
 
