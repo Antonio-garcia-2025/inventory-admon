@@ -1,39 +1,115 @@
-<!-- TABLA COMPARATIVA DE VENDEDORES -->
-  <h3 style="margin-bottom: 12px; color: #202124;">Desempeño por Vendedor</h3>
-  <table border="1" cellpadding="10" style="border-collapse: collapse; width: 100%; border: 1px solid #e0e0e0; text-align: left; background-color: white;">
-    <thead>
-      <tr style="background-color: #202124; color: white;">
-        <th>Vendedor (Email)</th>
-        <th>Fecha Registro</th>
-        <th style="text-align: center;">Productos</th>
-        <th style="text-align: center;">Stock Total</th>
-        <th style="text-align: center;">Ventas</th>
-        <th style="text-align: right;">Ingresos</th>
-        <th style="text-align: center;">Acciones</th>
-      </tr>
-    </thead>
-    <tbody>
-      <% @sellers.each do |seller| %>
-        <tr style="border-bottom: 1px solid #eee;">
-          <td>
-            <strong><%= seller[:email] %></strong>
-            <% if seller[:email] == current_user.email %>
-              <span style="background-color: #008060; color: white; padding: 2px 6px; border-radius: 4px; font-size: 0.75em; margin-left: 6px;">Tú (Admin)</span>
-            <% end %>
-          </td>
-          <td style="color: #5f6368; font-size: 0.9em;"><%= seller[:created_at].strftime("%d/%m/%Y") %></td>
-          <td style="text-align: center;"><%= seller[:products_count] %></td>
-          <td style="text-align: center;"><%= seller[:total_stock] %> unidades</td>
-          <td style="text-align: center; font-weight: bold;"><%= seller[:sales_count] %></td>
-          <td style="text-align: right; color: #137333; font-weight: bold; font-size: 1.05em;"><%= number_to_currency(seller[:total_earnings]) %></td>
-          <td style="text-align: center;">
-            <% if seller[:email] != current_user.email %>
-              <%= button_to "Eliminar cuenta", admin_destroy_user_path(seller[:id]), method: :delete, data: { turbo_confirm: "¿Estás seguro de eliminar permanentemente a #{seller[:email]} y todos sus productos/ventas?" }, style: "background-color: #d93025; color: white; border: none; padding: 6px 12px; border-radius: 4px; font-size: 0.85em; font-weight: bold; cursor: pointer;" %>
-            <% else %>
-              <span style="color: #80868b; font-size: 0.85em; font-style: italic;">Inmune</span>
-            <% end %>
-          </td>
+<div style="display: flex; flex-direction: column; gap: 24px; max-width: 1200px; margin: 0 auto;">
+  
+  <div style="display: flex; justify-content: space-between; align-items: center;">
+    <div>
+      <h1 style="margin: 0; color: #202124; font-size: 1.6em;">🛡️ Panel Global de Administración</h1>
+      <p style="margin: 4px 0 0 0; color: #5f6368; font-size: 0.95em;">Métricas financieras globales, inventario y cuentas de vendedores</p>
+    </div>
+    <%= link_to "⬅ Volver a mi Inventario", root_path, style: "background-color: #f1f3f4; color: #202124; text-decoration: none; padding: 9px 16px; border-radius: 6px; font-weight: 600; border: 1px solid #dadce0; font-size: 0.9em;" %>
+  </div>
+
+  <!-- TARJETAS DE MÉTRICAS GLOBALES -->
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px;">
+    <div style="background: white; border: 1px solid #ceead6; border-left: 5px solid #137333; padding: 18px 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.04);">
+      <span style="font-size: 0.8em; color: #137333; font-weight: bold; text-transform: uppercase;">💰 Ingresos Totales Plataforma</span>
+      <h2 style="margin: 8px 0 0 0; color: #137333; font-size: 1.8em;"><%= number_to_currency(@total_global_revenue || 0) %></h2>
+    </div>
+
+    <div style="background: white; border: 1px solid #feefc3; border-left: 5px solid #f2994a; padding: 18px 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.04);">
+      <span style="font-size: 0.8em; color: #b06000; font-weight: bold; text-transform: uppercase;">🧾 Ventas Concretadas</span>
+      <h2 style="margin: 8px 0 0 0; color: #b06000; font-size: 1.8em;"><%= @total_global_sales %> transacciones</h2>
+    </div>
+
+    <div style="background: white; border: 1px solid #d2e3fc; border-left: 5px solid #1a73e8; padding: 18px 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.04);">
+      <span style="font-size: 0.8em; color: #1a73e8; font-weight: bold; text-transform: uppercase;">📦 Stock Total Disponible</span>
+      <h2 style="margin: 8px 0 0 0; color: #1a73e8; font-size: 1.8em;"><%= @total_inventory_stock %> unidades</h2>
+    </div>
+
+    <div style="background: white; border: 1px solid #e9d2fd; border-left: 5px solid #8430ce; padding: 18px 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.04);">
+      <span style="font-size: 0.8em; color: #8430ce; font-weight: bold; text-transform: uppercase;">👥 Vendedores Activos</span>
+      <h2 style="margin: 8px 0 0 0; color: #8430ce; font-size: 1.8em;"><%= @total_sellers_count %></h2>
+    </div>
+  </div>
+
+  <!-- TABLA DE VENDEDORES -->
+  <div style="background: white; border: 1px solid #dadce0; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.04);">
+    <div style="padding: 16px 22px; border-bottom: 1px solid #ebebeb;">
+      <h3 style="margin: 0; color: #202124; font-size: 1.15em;">Rendimiento por Vendedor</h3>
+    </div>
+
+    <table border="0" cellpadding="14" style="border-collapse: collapse; width: 100%; text-align: left;">
+      <thead>
+        <tr style="background-color: #f8f9fa; border-bottom: 2px solid #e0e0e0; color: #5f6368; font-size: 0.8em; text-transform: uppercase; letter-spacing: 0.5px;">
+          <th>Vendedor</th>
+          <th>Fecha Registro</th>
+          <th style="text-align: center;">Productos</th>
+          <th style="text-align: center;">Stock</th>
+          <th style="text-align: center;">Ventas</th>
+          <th style="text-align: right;">Total Vendido</th>
+          <th style="text-align: center;">Acciones</th>
         </tr>
-      <% end %>
-    </tbody>
-  </table>
+      </thead>
+      <tbody>
+        <% @sellers.each do |seller| %>
+          <tr style="border-bottom: 1px solid #f1f3f4;">
+            <td>
+              <strong><%= seller[:email] %></strong>
+              <% if seller[:email] == current_user.email %>
+                <span style="background-color: #008060; color: white; padding: 2px 7px; border-radius: 4px; font-size: 0.75em; margin-left: 8px; font-weight: 600;">Tú (Admin)</span>
+              <% end %>
+            </td>
+            <td style="color: #5f6368; font-size: 0.9em;"><%= seller[:created_at].strftime("%d/%m/%Y") %></td>
+            <td style="text-align: center;"><%= seller[:products_count] %></td>
+            <td style="text-align: center;"><%= seller[:total_stock] %> un.</td>
+            <td style="text-align: center; font-weight: 600;"><%= seller[:sales_count] %></td>
+            <td style="text-align: right; color: #137333; font-weight: bold;"><%= number_to_currency(seller[:total_revenue]) %></td>
+            <td style="text-align: center;">
+              <% if seller[:email] != current_user.email %>
+                <%= button_to "Eliminar", admin_destroy_user_path(seller[:id]), method: :delete, data: { turbo_confirm: "¿Eliminar a #{seller[:email]}?" }, style: "background-color: #d93025; color: white; border: none; padding: 6px 12px; border-radius: 4px; font-size: 0.82em; font-weight: 600; cursor: pointer;" %>
+              <% else %>
+                <span style="color: #9aa0a6; font-size: 0.85em; font-style: italic;">Principal</span>
+              <% end %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- HISTORIAL GLOBAL DE TRANSACCIONES -->
+  <div style="background: white; border: 1px solid #dadce0; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.04); margin-bottom: 20px;">
+    <div style="padding: 16px 22px; border-bottom: 1px solid #ebebeb;">
+      <h3 style="margin: 0; color: #202124; font-size: 1.15em;">Últimas Ventas en la Plataforma</h3>
+    </div>
+
+    <table border="0" cellpadding="14" style="border-collapse: collapse; width: 100%; text-align: left;">
+      <thead>
+        <tr style="background-color: #f8f9fa; border-bottom: 2px solid #e0e0e0; color: #5f6368; font-size: 0.8em; text-transform: uppercase; letter-spacing: 0.5px;">
+          <th>Producto</th>
+          <th>Vendedor</th>
+          <th style="text-align: right;">Monto</th>
+          <th style="text-align: right;">Fecha y Hora</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if @recent_global_sales.present? && @recent_global_sales.any? %>
+          <% @recent_global_sales.each do |sale| %>
+            <tr style="border-bottom: 1px solid #f1f3f4;">
+              <td><strong><%= sale.product&.name || "Producto no disponible" %></strong></td>
+              <td style="color: #5f6368; font-size: 0.9em;"><%= sale.user&.email || "Usuario no disponible" %></td>
+              <td style="text-align: right; color: #137333; font-weight: 600;"><%= number_to_currency(sale.price) %></td>
+              <td style="text-align: right; color: #5f6368; font-size: 0.9em;"><%= sale.created_at.strftime("%d/%m/%Y %H:%M") %></td>
+            </tr>
+          <% end %>
+        <% else %>
+          <tr>
+            <td colspan="4" style="text-align: center; color: #5f6368; padding: 25px;">
+              No se han registrado ventas globales todavía.
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+
+</div>
