@@ -4,7 +4,7 @@ class User < ApplicationRecord
 
   has_many :categories, dependent: :destroy
   has_many :products, dependent: :destroy
-  has_many :sales, dependent: :destroy # <-- Agregar esta línea
+  has_many :sales, dependent: :destroy 
 
   before_save :make_me_admin
 

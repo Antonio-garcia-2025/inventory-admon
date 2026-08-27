@@ -6,6 +6,8 @@ Rails.application.routes.draw do
     delete 'users/:id', to: 'dashboard#destroy_user', as: :destroy_user
   end
 
+  resources :categories, only: [:create, :destroy]
+
   resources :products do
     member do
       post :sell
