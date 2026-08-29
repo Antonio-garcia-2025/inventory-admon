@@ -15,6 +15,16 @@
       </ul>
     </div>
   <% end %>
+  
+  <div style="margin-bottom: 16px;">
+  <%= f.label :image, "Cambiar Foto del Producto:", style: "display: block; font-weight: 600; margin-bottom: 6px; font-size: 0.9em;" %>
+  <% if @product.image.attached? %>
+    <div style="margin-bottom: 8px;">
+      <%= image_tag @product.image, style: "width: 70px; height: 70px; object-fit: cover; border-radius: 6px; border: 1px solid #dadce0;" %>
+    </div>
+  <% end %>
+  <%= f.file_field :image, accept: "image/png,image/jpeg,image/webp", style: "width: 100%; font-size: 0.9em;" %>
+</div>
 
   <%= form_with model: @product, local: true do |f| %>
     <div style="margin-bottom: 15px;">

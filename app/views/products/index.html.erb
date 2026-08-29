@@ -3,29 +3,33 @@
   <!-- 1. TARJETAS DE MÉTRICAS -->
   <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px;">
     <div style="background: white; border: 1px solid #e0e0e0; border-left: 5px solid #137333; padding: 18px 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.04);">
-      <span style="font-size: 0.8em; color: #5f6368; font-weight: bold; text-transform: uppercase;">💰 Ingresos por Ventas</span>
+      <span style="font-size: 0.8em; color: #5f6368; font-weight: bold; text-transform: uppercase;">Ingresos por Ventas</span>
       <h2 style="margin: 8px 0 0 0; color: #137333; font-size: 1.8em;"><%= number_to_currency(@total_revenue || 0) %></h2>
     </div>
 
     <div style="background: white; border: 1px solid #e0e0e0; border-left: 5px solid #1a73e8; padding: 18px 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.04);">
-      <span style="font-size: 0.8em; color: #5f6368; font-weight: bold; text-transform: uppercase;">📦 Stock Total Disponible</span>
+      <span style="font-size: 0.8em; color: #5f6368; font-weight: bold; text-transform: uppercase;"> Stock Total Disponible</span>
       <h2 style="margin: 8px 0 0 0; color: #1a73e8; font-size: 1.8em;"><%= @total_stock %> unidades</h2>
     </div>
 
     <div style="background: white; border: 1px solid #e0e0e0; border-left: 5px solid #8430ce; padding: 18px 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.04);">
-      <span style="font-size: 0.8em; color: #5f6368; font-weight: bold; text-transform: uppercase;">🏷️ Total Productos</span>
+      <span style="font-size: 0.8em; color: #5f6368; font-weight: bold; text-transform: uppercase;">Total Productos</span>
       <h2 style="margin: 8px 0 0 0; color: #8430ce; font-size: 1.8em;"><%= @total_products %></h2>
     </div>
 
     <div style="background: white; border: 1px solid #e0e0e0; border-left: 5px solid #c5221f; padding: 18px 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.04);">
-      <span style="font-size: 0.8em; color: #5f6368; font-weight: bold; text-transform: uppercase;">⚠️ Agotados</span>
+      <span style="font-size: 0.8em; color: #5f6368; font-weight: bold; text-transform: uppercase;">Agotados</span>
       <h2 style="margin: 8px 0 0 0; color: #c5221f; font-size: 1.8em;"><%= @products.where(stock: 0).count %></h2>
     </div>
   </div>
 
   <!-- 2. GESTIÓN DE CATEGORÍAS (CREAR Y VER CATEGORÍAS) -->
+  <div id="categorias" style= "background: white; border: 1px solid #dadce0; border-radius: 8px; padding: 18px 22px; box-shadow: 0 1px 3px rgba(0,0,0,0.04);">
+    <h3 style="margin: 0 0 12px 0; color: #202124; font-size: 1.1em;">Gestión de Categorías</h3>
+    <p style="margin: 0 0 18px 0; color: #5f6368; font-size: 0.9em;">Crea y administra tus categorías para organizar tus productos.</p>
+
   <div style="background: white; border: 1px solid #dadce0; border-radius: 8px; padding: 18px 22px; box-shadow: 0 1px 3px rgba(0,0,0,0.04);">
-    <h3 style="margin: 0 0 12px 0; color: #202124; font-size: 1.1em;">🏷️ Tus Categorías</h3>
+    <h3 style="margin: 0 0 12px 0; color: #202124; font-size: 1.1em;">Tus Categorías</h3>
     
     <div style="display: flex; flex-wrap: wrap; gap: 15px; align-items: center; justify-content: space-between;">
       
@@ -39,7 +43,7 @@
             </span>
           <% end %>
         <% else %>
-          <span style="color: #5f6368; font-size: 0.9em; font-style: italic;">No has creado categorías todavía. Crea una aquí a la derecha 👉</span>
+          <span style="color: #5f6368; font-size: 0.9em; font-style: italic;">No has creado categorías todavía. Crea una aquí a la derecha </span>
         <% end %>
       </div>
 
@@ -53,8 +57,11 @@
   </div>
 
   <!-- 3. FORMULARIO DE ALTA RÁPIDA DE PRODUCTO -->
+
+  <div id="nuevo-producto" style="background: white; border: 1px solid #dadce0; border-radius: 8px; padding: 22px; box-shadow: 0 1px 3px rgba(0,0,0,0.04);">
+
   <div style="background: white; border: 1px solid #dadce0; border-radius: 8px; padding: 22px; box-shadow: 0 1px 3px rgba(0,0,0,0.04);">
-    <h3 style="margin: 0 0 18px 0; color: #202124; font-size: 1.15em;">➕ Agregar Nuevo Producto</h3>
+    <h3 style="margin: 0 0 18px 0; color: #202124; font-size: 1.15em;"> Agregar Nuevo Producto</h3>
 
     <% if @product&.errors&.any? %>
       <div style="color: #c5221f; background-color: #fce8e6; padding: 12px 16px; border: 1px solid #fad2cf; margin-bottom: 18px; border-radius: 6px;">
@@ -68,6 +75,12 @@
     <% end %>
 
     <%= form_with(model: @product, local: true, style: "display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-end;") do |f| %>
+      
+      <div style="flex: 1.5; min-width: 170px;">
+      <%= f.label :image, "Foto del Producto:", style: "display: block; font-weight: 600; margin-bottom: 6px; font-size: 0.85em; color: #3c4043;" %>
+      <%= f.file_field :image, accept: "image/png,image/jpeg,image/webp", style: "width: 100%; padding: 6px 0; font-size: 0.85em;" %>
+      </div>
+
       <div style="flex: 2; min-width: 200px;">
         <%= f.label :name, "Nombre del Producto *", style: "display: block; font-weight: 600; margin-bottom: 6px; font-size: 0.85em; color: #3c4043;" %>
         <%= f.text_field :name, placeholder: "Ej. Camisa Oversize", required: true, style: "width: 100%; padding: 9px 12px; border: 1px solid #dadce0; border-radius: 6px; box-sizing: border-box; font-size: 0.95em;" %>
@@ -135,7 +148,7 @@
               <td style="text-align: center;">
                 <div style="display: flex; gap: 10px; justify-content: center; align-items: center;">
                   <% if product.stock > 0 %>
-                    <%= button_to "💰 Vender 1", sell_product_path(product), method: :post, style: "background-color: #008060; color: white; border: none; padding: 6px 12px; border-radius: 4px; font-size: 0.82em; font-weight: 600; cursor: pointer;" %>
+                    <%= button_to " Vender 1", sell_product_path(product), method: :post, style: "background-color: #008060; color: white; border: none; padding: 6px 12px; border-radius: 4px; font-size: 0.82em; font-weight: 600; cursor: pointer;" %>
                   <% end %>
                   <%= link_to "Editar", edit_product_path(product), style: "color: #1a73e8; text-decoration: none; font-size: 0.85em; font-weight: 500;" %>
                   <%= button_to "Eliminar", product_path(product), method: :delete, data: { turbo_confirm: "¿Deseas eliminar este producto?" }, style: "background: none; border: none; color: #d93025; font-size: 0.85em; cursor: pointer; text-decoration: underline; padding: 0;" %>
@@ -180,7 +193,7 @@
         <% else %>
           <tr>
             <td colspan="3" style="text-align: center; color: #5f6368; padding: 25px;">
-              No hay registros de ventas recientes. Haz clic en <strong>💰 Vender 1</strong> para ver el historial aquí.
+              No hay registros de ventas recientes. Haz clic en <strong> Vender 1</strong> para ver el historial aquí.
             </td>
           </tr>
         <% end %>
