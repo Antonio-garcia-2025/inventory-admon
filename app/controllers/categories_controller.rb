@@ -5,18 +5,18 @@ class CategoriesController < ApplicationController
     @category = current_user.categories.build(category_params)
 
     if @category.save
-      redirect_to root_path, notice: "Categoría '#{@category.name}' creada exitosamente."
+      redirect_to products_path, notice: "Categoría '#{@category.name}' creada exitosamente."
     else
-      redirect_to root_path, alert: "Error al crear la categoría: #{@category.errors.full_messages.to_sentence}"
+      redirect_to products_path, alert: "Error al crear la categoría: #{@category.errors.full_messages.to_sentence}"
     end
   end
 
   def destroy
     @category = current_user.categories.find(params[:id])
     @category.destroy
-    redirect_to root_path, notice: "Categoría eliminada exitosamente."
+    redirect_to products_path, notice: "Categoría eliminada exitosamente."
   rescue ActiveRecord::RecordNotFound
-    redirect_to root_path, alert: "Categoría no encontrada."
+    redirect_to products_path, alert: "Categoría no encontrada."
   end
 
   private
