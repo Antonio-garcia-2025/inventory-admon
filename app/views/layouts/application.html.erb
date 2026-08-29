@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Inventario</title>
+    <title>Mercado Shop</title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
@@ -9,41 +9,50 @@
     <%= javascript_importmap_tags %>
   </head>
 
-  <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; margin: 0; padding: 0; background-color: #f8f9fa;">
+  <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; background-color: #f8f9fa; color: #202124;">
     
-    <!-- BARRA SUPERIOR DE NAVEGACIÓN -->
-    <header style="background-color: #202124; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; color: white;">
-      <div>
-        <%= link_to "📦 Mi Inventario", root_path, style: "color: white; font-weight: bold; text-decoration: none; font-size: 1.1em;" %>
+    <!-- BARRA DE NAVEGACIÓN -->
+    <header style="background-color: #202124; padding: 12px 24px; display: flex; justify-content: space-between; align-items: center; color: white; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+      <div style="display: flex; gap: 20px; align-items: center;">
+        <%= link_to "🛍️ Mercado Shop", root_path, style: "color: white; font-weight: bold; text-decoration: none; font-size: 1.2em;" %>
+        <%= link_to "🏪 Ver Tienda", store_path, style: "color: #dadce0; text-decoration: none; font-size: 0.9em; font-weight: 500;" %>
+        <% if user_signed_in? %>
+          <%= link_to "📦 Mi Inventario", products_path, style: "color: #dadce0; text-decoration: none; font-size: 0.9em; font-weight: 500;" %>
+        <% end %>
       </div>
 
       <div style="display: flex; gap: 15px; align-items: center;">
         <% if user_signed_in? %>
-          <span style="color: #9aa0a6; font-size: 0.9em;"><%= current_user.email %></span>
+          <!-- IDENTIDAD PRIVADA DEL USUARIO -->
+          <span style="color: #8ab4f8; font-weight: 600; font-size: 0.9em;">@<%= current_user.display_name %></span>
           
           <!-- BOTÓN ADMIN -->
-          <% if current_user.admin? || current_user.email.downcase == "antonioggguerrero@gmail.com" %>
+          <% if (current_user.respond_to?(:admin?) && current_user.admin?) || current_user.email.to_s.downcase == "antonioggguerrero@gmail.com" %>
             <%= link_to "🛡️ Panel Admin", admin_dashboard_path, style: "background-color: #f2994a; color: white; text-decoration: none; padding: 6px 12px; border-radius: 4px; font-weight: bold; font-size: 0.85em;" %>
           <% end %>
 
-          <%= button_to "Cerrar sesión", destroy_user_session_path, method: :delete, style: "background: none; border: 1px solid #5f6368; color: #dadce0; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 0.85em;" %>
+          <%= button_to "Cerrar sesión", destroy_user_session_path, method: :delete, style: "background: none; border: 1px solid #5f6368; color: #dadce0; padding: 5px 12px; border-radius: 4px; cursor: pointer; font-size: 0.85em;" %>
         <% else %>
           <%= link_to "Iniciar sesión", new_user_session_path, style: "color: white; text-decoration: none; font-size: 0.9em;" %>
-          <%= link_to "Registrarse", new_user_registration_path, style: "background-color: #1a73e8; color: white; text-decoration: none; padding: 6px 12px; border-radius: 4px; font-size: 0.9em;" %>
+          <%= link_to "Registrarse", new_user_registration_path, style: "background-color: #1a73e8; color: white; text-decoration: none; padding: 6px 14px; border-radius: 4px; font-size: 0.9em; font-weight: 600;" %>
         <% end %>
       </div>
     </header>
 
     <!-- MENSAJES FLASH -->
     <% if notice %>
-      <div style="background-color: #e6f4ea; color: #137333; padding: 10px 20px; border-bottom: 1px solid #ceead6; text-align: center;"><%= notice %></div>
-    <% end %>
-    <% if alert %>
-      <div style="background-color: #fce8e6; color: #c5221f; padding: 10px 20px; border-bottom: 1px solid #fad2cf; text-align: center;"><%= alert %></div>
+      <div style="background-color: #e6f4ea; color: #137333; padding: 12px 24px; border-bottom: 1px solid #ceead6; text-align: center; font-weight: 500;">
+        <%= notice %>
+      </div>
     <% end %>
 
-    <!-- CONTENIDO DE LA PÁGINA -->
-    <main style="padding: 20px;">
+    <% if alert %>
+      <div style="background-color: #fce8e6; color: #c5221f; padding: 12px 24px; border-bottom: 1px solid #fad2cf; text-align: center; font-weight: 500;">
+        <%= alert %>
+      </div>
+    <% end %>
+
+    <main style="padding: 24px; max-width: 1200px; margin: 0 auto;">
       <%= yield %>
     </main>
 

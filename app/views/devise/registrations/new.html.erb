@@ -1,43 +1,37 @@
-<div style="max-width: 420px; margin: 50px auto; padding: 35px 30px; background: #ffffff; border: 1px solid #e1e4e8; border-radius: 12px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
-  
-  <div style="text-align: center; margin-bottom: 25px;">
-    <span style="font-size: 2.5rem;">🛍️</span>
-    <h2 style="margin: 10px 0 5px 0; color: #202124; font-weight: 700;">Crear Cuenta</h2>
-    <p style="margin: 0; color: #5f6368; font-size: 0.9em;">Empieza a gestionar tu inventario hoy</p>
-  </div>
-
-  <%= render "devise/shared/error_messages", resource: resource %>
+<div style="max-width: 450px; margin: 40px auto; background: white; padding: 30px; border-radius: 8px; border: 1px solid #dadce0; box-shadow: 0 2px 6px rgba(0,0,0,0.05);">
+  <h2 style="margin-top: 0; color: #202124; text-align: center;">Crear Cuenta de Vendedor</h2>
 
   <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
-    
-    <div style="margin-bottom: 18px;">
-      <%= f.label :email, "Correo electrónico", style: "display: block; font-weight: 600; color: #3c4043; margin-bottom: 6px; font-size: 0.9em;" %>
-      <%= f.email_field :email, autofocus: true, autocomplete: "email", placeholder: "tu@email.com", required: true, style: "width: 100%; padding: 10px 12px; border: 1px solid #dadce0; border-radius: 6px; font-size: 0.95em; box-sizing: border-box; outline: none;" %>
+    <%= render "devise/shared/error_messages", resource: resource %>
+
+    <!-- CAMPO USERNAME -->
+    <div style="margin-bottom: 15px;">
+      <%= f.label :username, "Nombre de Usuario o Tienda:", style: "display: block; font-weight: 600; margin-bottom: 5px; font-size: 0.9em;" %>
+      <%= f.text_field :username, autofocus: true, placeholder: "Ej. MiTiendaCDMX", required: true, style: "width: 100%; padding: 10px; border: 1px solid #dadce0; border-radius: 6px; box-sizing: border-box;" %>
+      <small style="color: #5f6368; font-size: 0.8em;">Este nombre público se mostrará a tus compradores.</small>
     </div>
 
-    <div style="margin-bottom: 18px;">
-      <%= f.label :password, "Contraseña", style: "display: block; font-weight: 600; color: #3c4043; margin-bottom: 6px; font-size: 0.9em;" %>
-      <% if @minimum_password_length %>
-        <span style="font-size: 0.8em; color: #80868b; display: block; margin-bottom: 4px;">(mínimo <%= @minimum_password_length %> caracteres)</span>
-      <% end %>
-      <%= f.password_field :password, autocomplete: "new-password", placeholder: "••••••••", required: true, style: "width: 100%; padding: 10px 12px; border: 1px solid #dadce0; border-radius: 6px; font-size: 0.95em; box-sizing: border-box; outline: none;" %>
+    <div style="margin-bottom: 15px;">
+      <%= f.label :email, "Correo Electrónico (Privado):", style: "display: block; font-weight: 600; margin-bottom: 5px; font-size: 0.9em;" %>
+      <%= f.email_field :email, autocomplete: "email", required: true, style: "width: 100%; padding: 10px; border: 1px solid #dadce0; border-radius: 6px; box-sizing: border-box;" %>
     </div>
 
-    <div style="margin-bottom: 22px;">
-      <%= f.label :password_confirmation, "Confirmar contraseña", style: "display: block; font-weight: 600; color: #3c4043; margin-bottom: 6px; font-size: 0.9em;" %>
-      <%= f.password_field :password_confirmation, autocomplete: "new-password", placeholder: "••••••••", required: true, style: "width: 100%; padding: 10px 12px; border: 1px solid #dadce0; border-radius: 6px; font-size: 0.95em; box-sizing: border-box; outline: none;" %>
+    <div style="margin-bottom: 15px;">
+      <%= f.label :password, "Contraseña:", style: "display: block; font-weight: 600; margin-bottom: 5px; font-size: 0.9em;" %>
+      <%= f.password_field :password, autocomplete: "new-password", required: true, style: "width: 100%; padding: 10px; border: 1px solid #dadce0; border-radius: 6px; box-sizing: border-box;" %>
     </div>
 
-    <div>
-      <%= f.submit "Crear mi cuenta", style: "width: 100%; background-color: #008060; color: #ffffff; border: none; padding: 12px; border-radius: 6px; font-size: 1em; font-weight: 600; cursor: pointer;" %>
+    <div style="margin-bottom: 20px;">
+      <%= f.label :password_confirmation, "Confirmar Contraseña:", style: "display: block; font-weight: 600; margin-bottom: 5px; font-size: 0.9em;" %>
+      <%= f.password_field :password_confirmation, autocomplete: "new-password", required: true, style: "width: 100%; padding: 10px; border: 1px solid #dadce0; border-radius: 6px; box-sizing: border-box;" %>
+    </div>
+
+    <div style="margin-bottom: 15px;">
+      <%= f.submit "Registrarse", style: "width: 100%; background-color: #1a73e8; color: white; border: none; padding: 12px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 1em;" %>
     </div>
   <% end %>
 
-  <div style="margin-top: 25px; padding-top: 20px; border-top: 1px solid #f1f3f4; text-align: center; font-size: 0.9em; color: #5f6368;">
-    ¿Ya tienes cuenta? 
-    <%- if controller_name != 'sessions' %>
-      <%= link_to "Inicia sesión", new_session_path(resource_name), style: "color: #008060; font-weight: 600; text-decoration: none;" %>
-    <% end %>
+  <div style="text-align: center; font-size: 0.9em;">
+    <%= render "devise/shared/links" %>
   </div>
-
 </div>

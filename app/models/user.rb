@@ -6,7 +6,15 @@ class User < ApplicationRecord
   has_many :products, dependent: :destroy
   has_many :sales, dependent: :destroy 
 
+  validates :email, presence: true, uniqueness: {case_sensitive: false}, length: {maximum: 3, maximum: 25}, on: :create
+
+
   before_save :make_me_admin
+
+  #aqui es el controlador para privacidad e identidad.
+  def display_name
+    username.presence || email.split('@').first
+  end
 
   private
 

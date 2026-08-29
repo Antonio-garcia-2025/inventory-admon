@@ -1,0 +1,82 @@
+<div style="max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; gap: 30px;">
+
+  <!-- BANNER DE BIENVENIDA -->
+  <div style="background: linear-gradient(135deg, #1a73e8, #0d47a1); color: white; padding: 40px 30px; border-radius: 12px; box-shadow: 0 4px 12px rgba(26, 115, 232, 0.2); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px;">
+    <div>
+      <h1 style="margin: 0 0 8px 0; font-size: 2.2em; font-weight: 800;">Bienvenido a Nuestro Mercado</h1>
+      <p style="margin: 0; font-size: 1.1em; opacity: 0.9;">Descubre y compra productos directamente de nuestros vendedores independientes.</p>
+    </div>
+    <div>
+      <% if user_signed_in? %>
+        <%= link_to " Ir a Mi Inventario de Vendedor", products_path, style: "background-color: white; color: #1a73e8; text-decoration: none; padding: 12px 20px; border-radius: 8px; font-weight: bold; font-size: 0.95em; box-shadow: 0 2px 6px rgba(0,0,0,0.15);" %>
+      <% else %>
+        <%= link_to " Conviértete en Vendedor", new_user_registration_path, style: "background-color: #34a853; color: white; text-decoration: none; padding: 12px 20px; border-radius: 8px; font-weight: bold; font-size: 0.95em;" %>
+      <% end %>
+    </div>
+  </div>
+
+  <!-- FILTROS POR CATEGORÍA -->
+  <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
+    <span style="font-weight: bold; color: #5f6368; font-size: 0.9em; margin-right: 5px;">Filtrar por:</span>
+    <%= link_to "Todos", store_path, style: "text-decoration: none; padding: 6px 14px; border-radius: 20px; font-size: 0.85em; font-weight: 600; #{params[:category_id].blank? ? 'background-color: #202124; color: white;' : 'background-color: white; color: #3c4043; border: 1px solid #dadce0;'}" %>
+    
+    <% @categories.each do |category| %>
+      <%= link_to category.name, store_path(category_id: category.id), style: "text-decoration: none; padding: 6px 14px; border-radius: 20px; font-size: 0.85em; font-weight: 600; #{params[:category_id].to_s == category.id.to_s ? 'background-color: #1a73e8; color: white;' : 'background-color: white; color: #3c4043; border: 1px solid #dadce0;'}" %>
+    <% end %>
+  </div>
+
+  <!-- PRODUCTOS OFERTADOS -->
+  <% if @products.any? %>
+    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px;">
+      <% @products.each do |product| %>
+        <div style="background: white; border: 1px solid #e0e0e0; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 2px 6px rgba(0,0,0,0.04); transition: transform 0.2s, box-shadow 0.2s;">
+          
+          <!-- Encabezado de la Tarjeta con Categoría y Stock -->
+          <div style="padding: 20px 20px 10px 20px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+              <span style="background-color: #e8f0fe; color: #1a73e8; padding: 3px 10px; border-radius: 12px; font-size: 0.78em; font-weight: bold; text-transform: uppercase;">
+                <%= product.category&.name || "General" %>
+              </span>
+              <span style="color: #137333; font-size: 0.8em; font-weight: bold;">
+                ● <%= product.stock %> disponibles
+              </span>
+            </div>
+
+            <!-- Título del Producto -->
+            <h3 style="margin: 0 0 8px 0; color: #202124; font-size: 1.25em;"><%= product.name %></h3>
+            
+            <!-- Vendedor -->
+            <div style="font-size: 0.85em; color: #5f6368; margin-bottom: 15px; display: flex; align-items: center; gap: 5px;">
+              <span>👤 Vendedor:</span>
+              <strong style="color: #3c4043;"><%= product.user&.email&.split('@')&.first || "Tienda Oficial" %></strong>
+            </div>
+          </div>
+
+          <!-- Pie de la Tarjeta: Precio y Botón de Compra -->
+          <div style="padding: 15px 20px 20px 20px; background-color: #f8f9fa; border-top: 1px solid #f1f3f4; display: flex; justify-content: space-between; align-items: center;">
+            <div>
+              <span style="font-size: 0.75em; color: #5f6368; text-transform: uppercase; display: block;">Precio</span>
+              <span style="font-size: 1.4em; font-weight: 800; color: #202124;"><%= number_to_currency(product.price) %></span>
+            </div>
+
+            <div>
+              <% if user_signed_in? && product.user == current_user %>
+                <span style="background-color: #f1f3f4; color: #5f6368; border: 1px solid #dadce0; padding: 8px 14px; border-radius: 6px; font-size: 0.85em; font-weight: bold;">Tu Producto</span>
+              <% else %>
+                <%= button_to "💳 Comprar", store_buy_path(product), method: :post, data: { turbo_confirm: "¿Deseas comprar #{product.name} por #{number_to_currency(product.price)}?" }, style: "background-color: #008060; color: white; border: none; padding: 10px 18px; border-radius: 6px; font-weight: bold; font-size: 0.9em; cursor: pointer; box-shadow: 0 2px 4px rgba(0,128,96,0.2);" %>
+              <% end %>
+            </div>
+          </div>
+
+        </div>
+      <% end %>
+    </div>
+  <% else %>
+    <div style="background: white; border: 1px dashed #dadce0; border-radius: 12px; padding: 60px 20px; text-align: center;">
+      <h3 style="color: #3c4043; margin-bottom: 8px;">No hay productos disponibles en este momento</h3>
+      <p style="color: #70757a; margin-bottom: 20px;">Sé el primero en ofertar tus productos en la plataforma.</p>
+      <%= link_to "➕ Publicar un Producto", new_product_path, style: "background-color: #1a73e8; color: white; text-decoration: none; padding: 10px 18px; border-radius: 6px; font-weight: bold;" %>
+    </div>
+  <% end %>
+
+</div>
