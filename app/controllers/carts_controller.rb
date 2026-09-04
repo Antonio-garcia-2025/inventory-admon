@@ -1,4 +1,43 @@
-# POST /cart/checkout (Comprar todo el carrito y generar la orden)
+# frozen_string_literal: true
+
+class CartsController < ApplicationController
+  before_action :authenticate_user!, only: [:checkout]
+
+  # GET /cart
+  def show
+    @cart = current_cart
+    @cart_items = @cart.cart_items.includes(:product)
+  end
+
+  # POST /cart/add
+  def add
+    product = Product.find(params[:product_id])
+    quantity = (params[:quantity] || 1).to_i
+
+    cart = current_cart
+    cart_item = cart.cart_items.find_or_initialize_by(product: product)
+    
+    nueva_cantidad = (cart_item.persisted? ? cart_item.quantity : 0) + quantity
+
+    if nueva_cantidad > product.stock
+      redirect_back fallback_location: store_path, alert: "No hay suficiente stock disponible."
+      return
+    end
+
+    cart_item.quantity = nueva_cantidad
+    cart_item.save!
+
+    redirect_to cart_path, notice: "🛒 Producto agregado al carrito."
+  end
+
+  # DELETE /cart/remove/:id
+  def remove
+    cart_item = current_cart.cart_items.find(params[:id])
+    cart_item.destroy
+    redirect_to cart_path, notice: "Producto eliminado del carrito."
+  end
+
+  # POST /cart/checkout
   def checkout
     cart = current_cart
     items = cart.cart_items.includes(:product)
@@ -49,3 +88,20 @@
   rescue => e
     redirect_to cart_path, alert: "Hubo un problema al procesar la compra: #{e.message}"
   end
+
+  private
+
+  def current_cart
+    if session[:cart_id]
+      Cart.find_by(id: session[:cart_id]) || create_cart
+    else
+      create_cart
+    end
+  end
+
+  def create_cart
+    cart = Cart.create!
+    session[:cart_id] = cart.id
+    cart
+  end
+end
