@@ -1,10 +1,391 @@
-/*
- * This is a manifest file that'll be compiled into application.css.
- *
- * With Propshaft, assets are served efficiently without preprocessing steps. You can still include
- * application-wide styles in this file, but keep in mind that CSS precedence will follow the standard
- * cascading order, meaning styles declared later in the document or manifest will override earlier ones,
- * depending on specificity.
- *
- * Consider organizing styles into separate files for maintainability.
- */
+/* RESET BÁSICO Y TIPOGRAFÍA */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  background-color: #f8f9fa;
+  color: #202124;
+  line-height: 1.5;
+}
+
+/* CONTENEDOR GENERAL */
+.app-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+@media (min-width: 768px) {
+  .app-container {
+    padding: 24px;
+  }
+}
+
+/* NAVBAR RESPONSIVO */
+.navbar {
+  background-color: #202124;
+  color: white;
+  padding: 12px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.navbar-brand-group,
+.navbar-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.navbar-brand-group {
+  justify-content: space-between;
+}
+
+.navbar-actions {
+  justify-content: flex-start;
+}
+
+@media (min-width: 768px) {
+  .navbar {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 28px;
+  }
+  .navbar-actions {
+    justify-content: flex-end;
+  }
+}
+
+.nav-link {
+  color: #dadce0;
+  text-decoration: none;
+  font-size: 0.9em;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.nav-link:hover {
+  color: white;
+}
+
+.nav-badge-cart {
+  background-color: #3c4043;
+  color: white;
+  text-decoration: none;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 0.85em;
+  font-weight: bold;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* BANNER DE TIENDA */
+.store-banner {
+  background: linear-gradient(135deg, #1a73e8, #0d47a1);
+  color: white;
+  padding: 24px 20px;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  box-shadow: 0 4px 12px rgba(26, 115, 232, 0.2);
+}
+
+@media (min-width: 768px) {
+  .store-banner {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 36px 30px;
+  }
+}
+
+.store-banner h1 {
+  margin: 0 0 6px 0;
+  font-size: 1.6em;
+  font-weight: 800;
+}
+
+@media (min-width: 768px) {
+  .store-banner h1 {
+    font-size: 2.2em;
+  }
+}
+
+/* BUSCADOR Y FILTROS */
+.search-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+
+@media (min-width: 600px) {
+  .search-form {
+    flex-direction: row;
+    max-width: 550px;
+  }
+}
+
+.search-input {
+  flex: 1;
+  padding: 10px 14px;
+  border: 1px solid #dadce0;
+  border-radius: 8px;
+  font-size: 0.95em;
+  outline: none;
+}
+
+.btn-primary {
+  background-color: #1a73e8;
+  color: white;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 0.9em;
+  cursor: pointer;
+  text-decoration: none;
+  text-align: center;
+}
+
+.btn-dark {
+  background-color: #202124;
+  color: white;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+/* GRILLA DE PRODUCTOS (AUTO-ADAPTABLE) */
+.products-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+
+@media (min-width: 560px) {
+  .products-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+}
+
+@media (min-width: 960px) {
+  .products-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+}
+
+@media (min-width: 1200px) {
+  .products-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* TARJETA DE PRODUCTO */
+.product-card {
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+}
+
+.product-image-box {
+  height: 180px;
+  width: 100%;
+  background-color: #f1f3f4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.product-image-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* TABLA RESPONSIVA DEL CARRITO */
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  background: white;
+  border: 1px solid #dadce0;
+  border-radius: 8px;
+}
+
+.cart-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 580px; /* Asegura que no se aplaste en celulares */
+}
+
+.cart-table th, .cart-table td {
+  padding: 12px 14px;
+  border-bottom: 1px solid #f1f3f4;
+}
+/* SISTEMA RESPONSIVO DE CARRITO: TARJETAS EN MÓVIL, TABLA EN PC */
+.cart-items-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* FORMATO TARJETA (MÓVIL POR DEFECTO) */
+.cart-card-item {
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+}
+
+.cart-card-top {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.cart-card-thumb {
+  width: 55px;
+  height: 55px;
+  border-radius: 8px;
+  object-fit: cover;
+  background-color: #f1f3f4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.cart-card-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.cart-card-info h4 {
+  margin: 0 0 4px 0;
+  font-size: 0.95em;
+  color: #202124;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cart-card-seller {
+  margin: 0;
+  font-size: 0.8em;
+  color: #5f6368;
+}
+
+.cart-card-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid #f1f3f4;
+  padding-top: 10px;
+}
+
+.cart-card-pricing {
+  display: flex;
+  flex-direction: column;
+}
+
+.cart-card-subtotal {
+  font-size: 1.1em;
+  font-weight: 800;
+  color: #137333;
+}
+
+.cart-card-unit {
+  font-size: 0.75em;
+  color: #5f6368;
+}
+
+/* EN PANTALLAS GRANDES: CAMBIAR A FORMATO TABLA DE ESCRITORIO */
+@media (min-width: 768px) {
+  .cart-items-container {
+    background: white;
+    border: 1px solid #dadce0;
+    border-radius: 10px;
+    overflow: hidden;
+    gap: 0;
+  }
+
+  .cart-table-header {
+    display: grid !important;
+    grid-template-columns: 2.5fr 1.2fr 0.8fr 1fr 1fr 0.6fr;
+    background-color: #f8f9fa;
+    border-bottom: 2px solid #e0e0e0;
+    padding: 12px 18px;
+    font-size: 0.75em;
+    text-transform: uppercase;
+    color: #5f6368;
+    font-weight: bold;
+  }
+
+  .cart-card-item {
+    display: grid;
+    grid-template-columns: 2.5fr 1.2fr 0.8fr 1fr 1fr 0.6fr;
+    align-items: center;
+    padding: 14px 18px;
+    border: none;
+    border-bottom: 1px solid #f1f3f4;
+    border-radius: 0;
+    box-shadow: none;
+    gap: 0;
+  }
+
+  .cart-card-top {
+    gap: 12px;
+  }
+
+  .cart-card-bottom {
+    display: contents; /* Desmonta el contenedor para alinearse en las columnas de la grilla */
+  }
+
+  .cart-desktop-cell {
+    display: block !important;
+  }
+
+  .cart-mobile-only {
+    display: none !important;
+  }
+}
+
+/* OCULTAR EN MÓVIL ELEMENTOS EXCLUSIVOS DE ESCRITORIO */
+@media (max-width: 767px) {
+  .cart-table-header {
+    display: none !important;
+  }
+  .cart-desktop-cell {
+    display: none !important;
+  }
+  .cart-mobile-only {
+    display: flex;
+  }
+}

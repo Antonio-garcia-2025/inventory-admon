@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Admin
   class DashboardController < ApplicationController
     before_action :authenticate_user!
@@ -37,10 +39,10 @@ module Admin
     end
 
     def destroy_user
-      @user_to_delete = User.find(params[:id])
+      @user_to_delete = User.find(params.expect(:id))
 
       if @user_to_delete == current_user
-        redirect_to admin_dashboard_path, alert: "No puedes eliminar tu propia cuenta de Administrador."
+        redirect_to admin_dashboard_path, alert: 'No puedes eliminar tu propia cuenta de Administrador.'
       else
         user_email = @user_to_delete.email
         @user_to_delete.destroy
@@ -51,12 +53,12 @@ module Admin
     private
 
     def require_admin!
-      admin_email = "antonioggguerrero@gmail.com"
+      admin_email = 'antonioggguerrero@gmail.com'
       is_admin = (current_user.respond_to?(:admin?) && current_user.admin?) || (current_user.email.to_s.downcase == admin_email.downcase)
 
-      unless is_admin
-        redirect_to root_path, alert: "Acceso restringido. Se requieren privilegios de Administrador."
-      end
+      return if is_admin
+
+      redirect_to root_path, alert: 'Acceso restringido. Se requieren privilegios de Administrador.'
     end
   end
 end

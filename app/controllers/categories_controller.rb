@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CategoriesController < ApplicationController
   before_action :authenticate_user!
 
@@ -12,16 +14,16 @@ class CategoriesController < ApplicationController
   end
 
   def destroy
-    @category = current_user.categories.find(params[:id])
+    @category = current_user.categories.find(params.expect(:id))
     @category.destroy
-    redirect_to products_path, notice: "Categoría eliminada exitosamente."
+    redirect_to products_path, notice: 'Categoría eliminada exitosamente.'
   rescue ActiveRecord::RecordNotFound
-    redirect_to products_path, alert: "Categoría no encontrada."
+    redirect_to products_path, alert: 'Categoría no encontrada.'
   end
 
   private
 
   def category_params
-    params.require(:category).permit(:name)
+    params.expect(category: [:name])
   end
 end

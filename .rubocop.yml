@@ -1,8 +1,37 @@
-# Omakase Ruby styling for Rails
-inherit_gem: { rubocop-rails-omakase: rubocop.yml }
+plugins:
+  - rubocop-rails
 
-# Overwrite or add rules to create your own house style
-#
-# # Use `[a, [b, c]]` not `[ a, [ b, c ] ]`
-# Layout/SpaceInsideArrayLiteralBrackets:
-#   Enabled: false
+AllCops:
+  NewCops: enable
+  Exclude:
+    - 'db/**/*'
+    - 'config/**/*'
+    - 'bin/*'
+    - 'vendor/**/*'
+    - 'node_modules/**/*'
+
+# Relaja la regla del tamaño de línea
+Layout/LineLength:
+  Max: 150
+
+# Relaja la obligación de documentar cada clase
+Style/Documentation:
+  Enabled: false
+
+  # Desactiva las alertas de métodos demasiado largos o complejos
+Metrics/MethodLength:
+  Enabled: false
+Metrics/AbcSize:
+  Enabled: false
+
+# Permite escribir textos (como los flash notice) directamente en los controladores
+Rails/I18nLocaleTexts:
+  Enabled: false
+
+# Permite el uso de increment! y decrement! para el stock del carrito
+Rails/SkipsModelValidations:
+  Enabled: false
+
+# Omitir la advertencia de índices en base de datos para la validación del username
+Rails/UniqueValidationWithoutIndex:
+  Enabled: false

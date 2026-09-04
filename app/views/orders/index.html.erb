@@ -1,0 +1,62 @@
+<div style="max-width: 900px; margin: 0 auto; display: flex; flex-direction: column; gap: 24px;">
+
+  <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+    <h1 style="margin: 0; color: #202124; font-size: 1.6em; font-weight: 800;">📦 Mis Compras y Pedidos</h1>
+    <%= link_to "🏪 Seguir Comprando", store_path, class: "btn-primary", style: "font-size: 0.85em; padding: 8px 16px;" %>
+  </div>
+
+  <% if @orders.any? %>
+    <div style="display: flex; flex-direction: column; gap: 18px;">
+      <% @orders.each do |order| %>
+        <div style="background: white; border: 1px solid #dadce0; border-radius: 10px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.03);">
+          
+          <!-- ENCABEZADO DE LA ORDEN -->
+          <div style="background-color: #f8f9fa; border-bottom: 1px solid #ebebeb; padding: 12px 18px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+            <div>
+              <span style="font-size: 0.75em; color: #5f6368; text-transform: uppercase; font-weight: bold; display: block;">Pedido #<%= order.id %></span>
+              <span style="font-size: 0.85em; color: #3c4043;"><%= l(order.created_at, format: :long) %></span>
+            </div>
+            <div style="text-align: right;">
+              <span style="font-size: 0.75em; color: #5f6368; text-transform: uppercase; font-weight: bold; display: block;">Total pagado</span>
+              <span style="font-size: 1.15em; font-weight: 800; color: #137333;"><%= number_to_currency(order.total_price) %></span>
+            </div>
+          </div>
+
+          <!-- LISTA DE ARTÍCULOS COMPRADOS -->
+          <div style="padding: 16px 18px; display: flex; flex-direction: column; gap: 14px;">
+            <% order.order_items.each do |item| %>
+              <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; border-bottom: 1px solid #f8f9fa; padding-bottom: 10px;">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                  <% if item.product&.image&.attached? %>
+                    <%= image_tag item.product.image, style: "width: 45px; height: 45px; object-fit: cover; border-radius: 6px;" %>
+                  <% else %>
+                    <span style="font-size: 1.6em;">📦</span>
+                  <% end %>
+                  <div>
+                    <h4 style="margin: 0; font-size: 0.95em; color: #202124;"><%= item.product&.name || "Producto no disponible" %></h4>
+                    <span style="font-size: 0.8em; color: #5f6368;">
+                      <%= item.quantity %> <%= item.quantity == 1 ? 'unidad' : 'unidades' %> × <%= number_to_currency(item.unit_price) %>
+                    </span>
+                  </div>
+                </div>
+
+                <div>
+                  <% if item.product %>
+                    <%= link_to "⭐ Opinar / Calificar", product_path(item.product), style: "background-color: #f1f3f4; color: #1a73e8; border: 1px solid #dadce0; padding: 6px 12px; border-radius: 6px; font-size: 0.8em; font-weight: bold; text-decoration: none;" %>
+                  <% end %>
+                </div>
+              </div>
+            <% end %>
+          </div>
+
+        </div>
+      <% end %>
+    </div>
+  <% else %>
+    <div style="background: white; border: 1px dashed #dadce0; border-radius: 10px; padding: 50px 20px; text-align: center;">
+      <p style="color: #5f6368; font-size: 1.05em; margin-bottom: 16px;">Aún no has realizado ninguna compra.</p>
+      <%= link_to "🛍️ Ir a la Tienda a Explorar", store_path, class: "btn-primary", style: "display: inline-block;" %>
+    </div>
+  <% end %>
+
+</div>
