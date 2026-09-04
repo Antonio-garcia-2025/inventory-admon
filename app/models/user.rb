@@ -9,6 +9,7 @@ class User < ApplicationRecord
   has_many :reviews, dependent: :destroy
   has_many :orders, dependent: :destroy
   has_many :received_reviews, through: :products, source: :reviews, dependent: :destroy
+  has_many :carts, dependent: :destroy
   
   #calificacion promedio global del vendedor
   def seller_rating
@@ -16,7 +17,7 @@ class User < ApplicationRecord
     received_reviews.average(:rating).to_f.round(1)
   end
   #representacion visual de las estrellas
-  
+
   def seller_stars
     avg = seller_rating.round
     ('★' * avg) + ('☆' * (5 - avg))

@@ -91,8 +91,13 @@ class CartsController < ApplicationController
 
   private
 
+  private
+
   def current_cart
-    if session[:cart_id]
+    if user_signed_in?
+      # Si el usuario inició sesión, buscamos su carrito existente o lo creamos asignado a él
+      current_user.cart || current_user.create_cart!
+    elsif session[:cart_id]
       Cart.find_by(id: session[:cart_id]) || create_cart
     else
       create_cart
@@ -100,7 +105,8 @@ class CartsController < ApplicationController
   end
 
   def create_cart
-    cart = Cart.create!
+    # Si hay usuario autenticado se le asigna; si no, intenta crearlo
+    cart = Cart.create!(user: current_user)
     session[:cart_id] = cart.id
     cart
   end
