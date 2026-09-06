@@ -42,7 +42,7 @@ gem 'image_processing', '~> 1.2'
 
 group :development, :test do
   gem 'rubocop', '~> 1.88', groups: %i[development test]
-  gem 'rubocop-rails', '~> 2.36', groups: %i[development test]
+  gem 'rubocop-rails', '~> 2.37', groups: %i[development test]
   gem 'sqlite3', ">= 2.1"
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem 'debug', platforms: %i[mri windows], require: 'debug/prelude'
