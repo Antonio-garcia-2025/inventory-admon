@@ -110,27 +110,23 @@ class ProductsController < ApplicationController
     redirect_to products_path, alert: 'Producto no encontrado o no tienes permiso para modificarlo.'
   end
 
-  def cargar_datos_index
+def cargar_datos_index
     @products = current_user.products.order(created_at: :desc)
     @total_products = @products.count
     @total_stock = @products.sum(:stock)
     @product ||= current_user.products.build
     @categories = current_user.categories.order(:name)
 
-    # NUEVO: Reputación y últimas reseñas recibidas
+    # Reputación
     @seller_rating = current_user.seller_rating
     @seller_reviews_count = current_user.received_reviews.count
     @recent_reviews = current_user.received_reviews.includes(:user, :product).order(created_at: :desc).limit(5)
 
-    if defined?(Sale) && current_user.respond_to?(:sales)
-      @recent_sales = current_user.sales.includes(:product).order(created_at: :desc).limit(10)
-      @total_sales_count = current_user.sales.count
-      @total_revenue = current_user.sales.sum(:price)
-    else
-      @recent_sales = []
-      @total_sales_count = 0
-      @total_revenue = 0.0
-    end
+    # Ventas reales calculadas desde OrderItem
+    @total_revenue = current_user.total_revenue
+    @total_pieces_sold = current_user.total_pieces_sold
+    @total_sales_count = current_user.total_sales_count
+    @recent_sales = current_user.sold_items.includes(:product, :order).order(created_at: :desc).limit(10)
   end
 
   def product_params

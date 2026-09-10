@@ -1,33 +1,29 @@
+# frozen_string_literal: true
+
 class ReviewsController < ApplicationController
   before_action :authenticate_user!
   before_action :set_product
 
   def create
-    # Evitar que el vendedor se califique a sí mismo
-    if @product.user == current_user
-      redirect_to @product, alert: 'No puedes calificar tu propio producto.'
+    # 1. Verificar si el usuario ha comprado este producto
+    has_purchased = current_user.orders.joins(:order_items)
+                                .where(order_items: { product_id: @product.id })
+                                .exists?
+
+    unless has_purchased
+      redirect_to product_path(@product), alert: "Debes comprar este producto antes de calificarlo."
       return
     end
 
-    @review = @product.reviews.build(review_params)
-    @review.user = current_user
+    # 2. Buscar si ya tenía una reseña previa o crear una nueva
+    # Si prefieres que cada compra actualice su calificación global:
+    @review = @product.reviews.find_or_initialize_by(user: current_user)
+    @review.assign_attributes(review_params)
 
     if @review.save
-      redirect_to @product, notice: '⭐ ¡Gracias por tu reseña!'
+      redirect_to product_path(@product), notice: "⭐ ¡Gracias! Tu reseña ha sido registrada exitosamente."
     else
-      redirect_to @product, alert: @review.errors.full_messages.to_sentence
-    end
-  end
-
-  def destroy
-    @review = @product.reviews.find(params[:id])
-
-    # Solo el autor o un administrador puede borrar la reseña
-    if @review.user == current_user || (current_user.respond_to?(:admin?) && current_user.admin?)
-      @review.destroy
-      redirect_to @product, notice: 'Reseña eliminada con éxito.'
-    else
-      redirect_to @product, alert: 'No tienes permiso para eliminar esta reseña.'
+      redirect_to product_path(@product), alert: @review.errors.full_messages.to_sentence
     end
   end
 

@@ -1,12 +1,10 @@
 <div style="max-width: 900px; margin: 0 auto; display: flex; flex-direction: column; gap: 30px;">
-  
   <div>
     <%= link_to "⬅ Volver a la Tienda", store_path, style: "color: #1a73e8; text-decoration: none; font-weight: 600; font-size: 0.9em;" %>
   </div>
 
   <!-- TARJETA PRINCIPAL DEL PRODUCTO -->
   <div style="background: white; border: 1px solid #dadce0; border-radius: 12px; padding: 24px; display: flex; flex-direction: column; gap: 24px; box-shadow: 0 1px 4px rgba(0,0,0,0.05);">
-    
     <div style="display: flex; flex-direction: column; gap: 20px;">
       <!-- IMAGEN -->
       <div style="max-height: 380px; width: 100%; background-color: #f1f3f4; border-radius: 8px; display: flex; align-items: center; justify-content: center; overflow: hidden;">
@@ -23,18 +21,19 @@
           <span style="background-color: #e8f0fe; color: #1a73e8; padding: 4px 12px; border-radius: 16px; font-size: 0.8em; font-weight: bold; text-transform: uppercase;">
             <%= @product.category&.name || "General" %>
           </span>
-          
+
           <!-- PROMEDIO DE ESTRELLAS -->
           <div style="display: flex; align-items: center; gap: 6px;">
-            <span style="color: #f2994a; font-size: 1.2em;"><%= @product.star_rating %></span>
+            <span style="color: #f2994a; font-size: 1.2em;"><%= @product.respond_to?(:star_rating) ? @product.star_rating : "☆☆☆☆☆" %></span>
             <strong style="color: #202124;"><%= @product.average_rating %></strong>
             <span style="color: #5f6368; font-size: 0.85em;">(<%= @product.reviews.count %> <%= @product.reviews.count == 1 ? 'opinión' : 'opiniones' %>)</span>
           </div>
         </div>
 
         <h1 style="margin: 0; color: #202124; font-size: 1.8em;"><%= @product.name %></h1>
-        <p style="margin: 0; color: #5f6368; font-size: 0.9em;">Vendido por: <strong style="color: #1a73e8;">@<%= @product.user&.display_name %></strong></p>
-
+        <p style="margin: 0; color: #5f6368; font-size: 0.9em;">
+        Vendido por: <strong style="color: #1a73e8;">@<%= @product.user.is_a?(String) ? @product.user : (@product.user.try(:display_name) || @product.user.try(:username) || @product.user.try(:email)&.split('@')&.first || "Vendedor") %></strong>
+        </p>
         <div style="margin: 10px 0; display: flex; align-items: baseline; gap: 14px;">
           <span style="font-size: 2em; font-weight: 800; color: #202124;"><%= number_to_currency(@product.price) %></span>
           <span style="color: <%= @product.stock > 0 ? '#137333' : '#d93025' %>; font-weight: bold; font-size: 0.95em;">
@@ -43,48 +42,56 @@
         </div>
 
         <div>
-          <% if user_signed_in? && @product.user == current_user %>
-            <span style="background-color: #f1f3f4; color: #5f6368; padding: 10px 18px; border-radius: 6px; font-weight: bold; display: inline-block;">Tu Producto</span>
+          <% if @product.stock > 0 %>
+            <% if user_signed_in? && @product.user == current_user %>
+              <span style="background-color: #f1f3f4; color: #5f6368; padding: 10px 18px; border-radius: 6px; font-weight: bold; display: inline-block;">Tu Producto</span>
+            <% else %>
+              <%= form_with url: add_to_cart_path(@product), method: :post, local: true, style: "display: flex; gap: 8px; align-items: center;" do |f| %>
+                <%= f.number_field :quantity, value: 1, min: 1, max: @product.stock, style: "width: 60px; padding: 10px; border: 1px solid #dadce0; border-radius: 6px; text-align: center; font-weight: bold;" %>
+                <%= f.submit "🛒 Agregar al Carrito", style: "background-color: #1a73e8; color: white; border: none; padding: 12px 24px; border-radius: 8px; font-weight: bold; font-size: 1em; cursor: pointer;" %>
+              <% end %>
+            <% end %>
           <% else %>
-            <%= button_to "🛒 Agregar al Carrito", add_to_cart_path(product_id: @product.id), method: :post, style: "background-color: #1a73e8; color: white; border: none; padding: 12px 24px; border-radius: 8px; font-weight: bold; font-size: 1em; cursor: pointer;" %>
+            <span style="background-color: #fce8e6; color: #c5221f; padding: 10px 18px; border-radius: 6px; font-weight: bold; display: inline-block;">Agotado</span>
           <% end %>
         </div>
       </div>
     </div>
-
   </div>
 
   <!-- SECCIÓN DE OPINIONES Y RESEÑAS -->
   <div style="background: white; border: 1px solid #dadce0; border-radius: 12px; padding: 24px; display: flex; flex-direction: column; gap: 24px;">
-    
     <h2 style="margin: 0; color: #202124; font-size: 1.4em;">⭐ Opiniones de los compradores</h2>
 
-    <!-- FORMULARIO PARA DEJAR RESEÑA -->
+    <!-- FORMULARIO PARA DEJAR O ACTUALIZAR RESEÑA -->
     <% if user_signed_in? %>
-      <% if @product.user == current_user %>
-        <p style="color: #5f6368; font-style: italic; font-size: 0.9em; margin: 0;">Los vendedores no pueden calificar sus propios productos.</p>
-      <% elsif @product.reviews.exists?(user_id: current_user.id) %>
-        <p style="background-color: #e6f4ea; color: #137333; padding: 10px 14px; border-radius: 6px; font-size: 0.9em; margin: 0;">Ya has dejado tu opinión sobre este producto.</p>
-      <% else %>
-        <div style="background-color: #f8f9fa; border: 1px solid #e0e0e0; border-radius: 8px; padding: 16px;">
-          <h4 style="margin: 0 0 12px 0; color: #202124;">Escribe tu opinión</h4>
-          
-          <%= form_with model: [@product, Review.new], local: true, style: "display: flex; flex-direction: column; gap: 12px;" do |f| %>
-            <div>
-              <%= f.label :rating, "Calificación:", style: "font-weight: 600; font-size: 0.85em; display: block; margin-bottom: 4px;" %>
-              <%= f.select :rating, options_for_select([["⭐⭐⭐⭐⭐ (5 estrellas)", 5], ["⭐⭐⭐⭐ (4 estrellas)", 4], ["⭐⭐⭐ (3 estrellas)", 3], ["⭐⭐ (2 estrellas)", 2], ["⭐ (1 estrella)", 1]], 5), {}, style: "padding: 8px 12px; border: 1px solid #dadce0; border-radius: 6px; font-size: 0.9em;" %>
+      <% has_purchased = current_user.orders.joins(:order_items).where(order_items: { product_id: @product.id }).exists? %>
+
+      <% if has_purchased %>
+        <div style="background: #f8f9fa; border: 1px solid #dadce0; border-radius: 12px; padding: 20px;">
+          <% existing_review = @product.reviews.find_by(user: current_user) %>
+          <h3 style="margin-top: 0; color: #202124;">
+            <%= existing_review ? "Actualizar tu opinión sobre este producto" : "Deja tu opinión sobre este producto" %>
+          </h3>
+
+          <%= form_with model: [@product, existing_review || @product.reviews.build], local: true do |f| %>
+            <div style="margin-bottom: 12px;">
+              <%= f.label :rating, "Calificación:", style: "display: block; font-weight: 600; margin-bottom: 4px;" %>
+              <%= f.select :rating, [["★★★★★ (5 Estrellas)", 5], ["★★★★☆ (4 Estrellas)", 4], ["★★★☆☆ (3 Estrellas)", 3], ["★★☆☆☆ (2 Estrellas)", 2], ["★☆☆☆☆ (1 Estrella)", 1]], {}, style: "padding: 8px; border-radius: 6px; border: 1px solid #dadce0;" %>
             </div>
 
-            <div>
-              <%= f.label :comment, "¿Qué te pareció el producto?:", style: "font-weight: 600; font-size: 0.85em; display: block; margin-bottom: 4px;" %>
-              <%= f.text_area :comment, rows: 3, placeholder: "Cuéntale a otros compradores tu experiencia con el producto...", style: "width: 100%; padding: 10px; border: 1px solid #dadce0; border-radius: 6px; font-size: 0.9em; resize: vertical; box-sizing: border-box;" %>
+            <div style="margin-bottom: 12px;">
+              <%= f.label :comment, "Comentario:", style: "display: block; font-weight: 600; margin-bottom: 4px;" %>
+              <%= f.text_area :comment, rows: 3, placeholder: "¿Qué te pareció el producto en tu compra?", style: "width: 100%; box-sizing: border-box; padding: 8px; border-radius: 6px; border: 1px solid #dadce0;" %>
             </div>
 
-            <div>
-              <%= f.submit "Publicar Reseña", style: "background-color: #202124; color: white; border: none; padding: 10px 18px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 0.9em;" %>
-            </div>
+            <%= f.submit existing_review ? "Actualizar Reseña" : "Publicar Reseña", style: "background: #1a73e8; color: white; border: none; padding: 10px 20px; border-radius: 6px; font-weight: bold; cursor: pointer;" %>
           <% end %>
         </div>
+      <% else %>
+        <p style="color: #5f6368; font-size: 0.9em; margin: 0;">
+          Debes comprar este producto para poder calificarlo.
+        </p>
       <% end %>
     <% else %>
       <p style="color: #5f6368; font-size: 0.9em; margin: 0;">
@@ -99,8 +106,9 @@
           <div style="border-bottom: 1px solid #f1f3f4; padding-bottom: 14px; display: flex; flex-direction: column; gap: 6px;">
             <div style="display: flex; justify-content: space-between; align-items: center;">
               <div>
-                <strong style="color: #202124; font-size: 0.95em;">@<%= review.user&.display_name %></strong>
-                <span style="color: #f2994a; margin-left: 8px; font-size: 1.05em;"><%= "★" * review.rating + "☆" * (5 - review.rating) %></span>
+              <strong style="color: #202124; font-size: 0.95em;">
+              @<%= review.user.is_a?(String) ? review.user : (review.user.try(:display_name) || review.user.try(:username) || review.user.try(:email)&.split('@')&.first || "Usuario") %>
+              </strong>
               </div>
               <div style="display: flex; align-items: center; gap: 10px;">
                 <span style="color: #80868b; font-size: 0.8em;"><%= time_ago_in_words(review.created_at) %> atrás</span>
@@ -116,7 +124,5 @@
     <% else %>
       <p style="color: #5f6368; font-style: italic; font-size: 0.9em; margin: 0;">Este producto aún no tiene opiniones. ¡Sé el primero en calificarlo!</p>
     <% end %>
-
   </div>
-
 </div>

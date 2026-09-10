@@ -1,253 +1,197 @@
-<div style="display: flex; flex-direction: column; gap: 24px; max-width: 1200px; margin: 0 auto;">
+<div style="max-width: 1200px; margin: 0 auto; padding: 24px 16px;">
 
-<!-- RESUMEN DE RENDIMIENTO Y REPUTACIÓN -->
-<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-bottom: 24px;">
-  
-  <!-- TARJETA: TOTAL VENTAS -->
-  <div style="background: white; border: 1px solid #dadce0; border-radius: 10px; padding: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.02);">
-    <span style="font-size: 0.75em; color: #5f6368; text-transform: uppercase; font-weight: bold;">Ventas Acumuladas</span>
-    <h2 style="margin: 6px 0 0 0; color: #137333; font-size: 1.6em;"><%= number_to_currency(@total_revenue) %> Pesos</h2>
-    <span style="font-size: 0.8em; color: #5f6368;"><%= @total_sales_count %> pedidos atendidos</span>
+  <!-- ENCABEZADO DEL PANEL -->
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+    <div>
+      <h1 style="margin: 0; font-size: 1.8em; color: #202124;">Panel de Vendedor</h1>
+      <p style="margin: 4px 0 0 0; color: #5f6368; font-size: 0.95em;">Administra tu inventario, ventas y opiniones recibidas</p>
+    </div>
+    <%= link_to "🏪 Ver Tienda Pública", store_path, style: "background: #f1f3f4; color: #202124; text-decoration: none; padding: 10px 16px; border-radius: 8px; font-weight: 600; border: 1px solid #dadce0;" %>
   </div>
 
-  <!-- TARJETA: STOCK DISPONIBLE -->
-  <div style="background: white; border: 1px solid #dadce0; border-radius: 10px; padding: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.02);">
-    <span style="font-size: 0.75em; color: #5f6368; text-transform: uppercase; font-weight: bold;">Inventario Activo</span>
-    <h2 style="margin: 6px 0 0 0; color: #1a73e8; font-size: 1.6em;"><%= @total_stock %> Piezas</h2>
-    <span style="font-size: 0.8em; color: #5f6368;">En <%= @total_products %> productos listados</span>
-  </div>
-
-  <!-- TARJETA: REPUTACIÓN DE LA TIENDA -->
-  <div style="background: white; border: 1px solid #dadce0; border-radius: 10px; padding: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.02);">
-    <span style="font-size: 0.75em; color: #5f6368; text-transform: uppercase; font-weight: bold;">Reputación como Vendedor</span>
-    <div style="display: flex; align-items: baseline; gap: 8px; margin-top: 6px;">
-      <h2 style="margin: 0; color: #f2994a; font-size: 1.6em;"><%= current_user.seller_stars %></h2>
-      <strong style="color: #202124; font-size: 1.1em;"><%= @seller_rating %></strong>
-    </div>
-    <span style="font-size: 0.8em; color: #5f6368;">Basado en <%= @seller_reviews_count %> <%= @seller_reviews_count == 1 ? 'opinión' : 'opiniones' %></span>
-  </div>
-
-</div>
-
-<!-- BANDEJA DE OPINIONES RECIENTES -->
-<% if @recent_reviews.any? %>
-  <div style="background: white; border: 1px solid #dadce0; border-radius: 10px; padding: 20px; margin-bottom: 24px;">
-    <h3 style="margin: 0 0 14px 0; color: #202124; font-size: 1.1em; font-weight: 700;">💬 Últimas opiniones sobre tus productos</h3>
-    <div style="display: flex; flex-direction: column; gap: 12px;">
-      <% @recent_reviews.each do |review| %>
-        <div style="border-bottom: 1px solid #f1f3f4; padding-bottom: 10px; display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 8px;">
-          <div>
-            <span style="font-weight: 600; color: #202124; font-size: 0.9em;">@<%= review.user&.display_name %></span>
-            <span style="color: #f2994a; font-size: 0.95em; margin-left: 6px;"><%= '★' * review.rating + '☆' * (5 - review.rating) %></span>
-            <span style="color: #5f6368; font-size: 0.85em; margin-left: 6px;">en <%= link_to review.product.name, product_path(review.product), style: "color: #1a73e8; text-decoration: none; font-weight: 500;" %></span>
-            <p style="margin: 4px 0 0 0; color: #3c4043; font-size: 0.85em; font-style: italic;">"<%= review.comment %>"</p>
-          </div>
-          <span style="font-size: 0.75em; color: #80868b;"><%= time_ago_in_words(review.created_at) %> atrás</span>
-        </div>
-      <% end %>
-    </div>
-  </div>
-<% end %>
-
-  <!-- 1. TARJETAS DE MÉTRICAS -->
-  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px;">
-    <div style="background: white; border: 1px solid #e0e0e0; border-left: 5px solid #137333; padding: 18px 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.04);">
-      <span style="font-size: 0.8em; color: #5f6368; font-weight: bold; text-transform: uppercase;">Ingresos por Ventas</span>
-      <h2 style="margin: 8px 0 0 0; color: #137333; font-size: 1.8em;"><%= number_to_currency(@total_revenue || 0) %></h2>
-    </div>
-
-    <div style="background: white; border: 1px solid #e0e0e0; border-left: 5px solid #1a73e8; padding: 18px 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.04);">
-      <span style="font-size: 0.8em; color: #5f6368; font-weight: bold; text-transform: uppercase;"> Stock Total Disponible</span>
-      <h2 style="margin: 8px 0 0 0; color: #1a73e8; font-size: 1.8em;"><%= @total_stock %> unidades</h2>
-    </div>
-
-    <div style="background: white; border: 1px solid #e0e0e0; border-left: 5px solid #8430ce; padding: 18px 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.04);">
-      <span style="font-size: 0.8em; color: #5f6368; font-weight: bold; text-transform: uppercase;">Total Productos</span>
-      <h2 style="margin: 8px 0 0 0; color: #8430ce; font-size: 1.8em;"><%= @total_products %></h2>
-    </div>
-
-    <div style="background: white; border: 1px solid #e0e0e0; border-left: 5px solid #c5221f; padding: 18px 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.04);">
-      <span style="font-size: 0.8em; color: #5f6368; font-weight: bold; text-transform: uppercase;">Agotados</span>
-      <h2 style="margin: 8px 0 0 0; color: #c5221f; font-size: 1.8em;"><%= @products.where(stock: 0).count %></h2>
-    </div>
-  </div>
-
-  <!-- 2. GESTIÓN DE CATEGORÍAS (CREAR Y VER CATEGORÍAS) -->
-  <div id="categorias" style= "background: white; border: 1px solid #dadce0; border-radius: 8px; padding: 18px 22px; box-shadow: 0 1px 3px rgba(0,0,0,0.04);">
-    <h3 style="margin: 0 0 12px 0; color: #202124; font-size: 1.1em;">Gestión de Categorías</h3>
-    <p style="margin: 0 0 18px 0; color: #5f6368; font-size: 0.9em;">Crea y administra tus categorías para organizar tus productos.</p>
-
-  <div style="background: white; border: 1px solid #dadce0; border-radius: 8px; padding: 18px 22px; box-shadow: 0 1px 3px rgba(0,0,0,0.04);">
-    <h3 style="margin: 0 0 12px 0; color: #202124; font-size: 1.1em;">Tus Categorías</h3>
+  <!-- TARJETAS DE MÉTRICAS (UNIFICADAS) -->
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin-bottom: 24px;">
     
-    <div style="display: flex; flex-wrap: wrap; gap: 15px; align-items: center; justify-content: space-between;">
-      
-      <!-- Listado de Categorías Existentes -->
-      <div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center;">
-        <% if @categories.present? && @categories.any? %>
-          <% @categories.each do |cat| %>
-            <span style="background-color: #f1f3f4; border: 1px solid #dadce0; padding: 5px 10px; border-radius: 16px; font-size: 0.85em; display: inline-flex; align-items: center; gap: 6px;">
-              <strong><%= cat.name %></strong>
-              <%= button_to "✕", category_path(cat), method: :delete, data: { turbo_confirm: "¿Eliminar categoría #{cat.name}?" }, style: "background: none; border: none; color: #d93025; font-size: 0.85em; cursor: pointer; padding: 0; line-height: 1;" %>
-            </span>
-          <% end %>
-        <% else %>
-          <span style="color: #5f6368; font-size: 0.9em; font-style: italic;">No has creado categorías todavía. Crea una aquí a la derecha </span>
+    <!-- Ventas e Ingresos -->
+    <div style="background: white; border: 1px solid #dadce0; border-radius: 12px; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.04);">
+      <span style="font-size: 0.75em; color: #5f6368; text-transform: uppercase; font-weight: bold; letter-spacing: 0.5px;">Ingresos Acumulados</span>
+      <h2 style="margin: 8px 0 4px 0; color: #137333; font-size: 1.8em;"><%= number_to_currency(@total_revenue) %></h2>
+      <span style="font-size: 0.85em; color: #5f6368;"><%= @total_pieces_sold %> piezas vendidas (<%= @total_sales_count %> órdenes)</span>
+    </div>
+
+    <!-- Inventario Activo -->
+    <div style="background: white; border: 1px solid #dadce0; border-radius: 12px; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.04);">
+      <span style="font-size: 0.75em; color: #5f6368; text-transform: uppercase; font-weight: bold; letter-spacing: 0.5px;">Inventario Activo</span>
+      <h2 style="margin: 8px 0 4px 0; color: #1a73e8; font-size: 1.8em;"><%= @total_stock %> Piezas</h2>
+      <span style="font-size: 0.85em; color: #5f6368;"><%= @total_products %> productos listados</span>
+    </div>
+
+    <!-- Reputación -->
+    <div style="background: white; border: 1px solid #dadce0; border-radius: 12px; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.04);">
+      <span style="font-size: 0.75em; color: #5f6368; text-transform: uppercase; font-weight: bold; letter-spacing: 0.5px;">Reputación de la Tienda</span>
+      <div style="margin: 8px 0 4px 0; display: flex; align-items: center; gap: 8px;">
+        <span style="color: #fbbc04; font-size: 1.4em; letter-spacing: 2px;"><%= current_user.seller_stars %></span>
+        <span style="font-size: 1.4em; font-weight: bold; color: #202124;"><%= @seller_rating %></span>
+      </div>
+      <span style="font-size: 0.85em; color: #5f6368;">Basado en <%= @seller_reviews_count %> <%= @seller_reviews_count == 1 ? 'opinión' : 'opiniones' %></span>
+    </div>
+
+  </div>
+
+  <!-- BANDEJA: ÚLTIMAS OPINIONES RECIBIDAS -->
+  <div style="background: white; border: 1px solid #dadce0; border-radius: 12px; padding: 20px; margin-bottom: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.04);">
+    <h3 style="margin: 0 0 16px 0; font-size: 1.1em; color: #202124; display: flex; align-items: center; gap: 8px;">
+      <span>💬</span> Últimas opiniones sobre tus productos
+    </h3>
+
+    <% if @recent_reviews.any? %>
+      <div style="display: flex; flex-direction: column; gap: 12px;">
+        <% @recent_reviews.each do |review| %>
+          <div style="border-left: 3px solid #1a73e8; padding-left: 12px; font-size: 0.9em;">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+              <div>
+                <strong>@<%= review.user.display_name %></strong>
+                <span style="color: #fbbc04; margin: 0 6px;"><%= '★' * review.rating %><%= '☆' * (5 - review.rating) %></span>
+                <span style="color: #5f6368;">en <%= link_to review.product.name, product_path(review.product), style: "color: #1a73e8; text-decoration: none;" %></span>
+              </div>
+              <span style="color: #80868b; font-size: 0.85em;"><%= time_ago_in_words(review.created_at) %> atrás</span>
+            </div>
+            <p style="margin: 0; color: #3c4043; font-style: italic;">"<%= review.comment.presence || 'Sin comentario escrito.' %>"</p>
+          </div>
         <% end %>
       </div>
+    <% else %>
+      <p style="margin: 0; color: #5f6368; font-style: italic; font-size: 0.9em;">Tus productos aún no han recibido opiniones de compradores.</p>
+    <% end %>
+  </div>
 
-      <!-- Formulario para Crear Categoría -->
-      <%= form_with(model: Category.new, url: categories_path, local: true, style: "display: flex; gap: 8px;") do |fc| %>
-        <%= fc.text_field :name, placeholder: "Nueva categoría (Ej. Ropa)", required: true, style: "padding: 7px 10px; border: 1px solid #dadce0; border-radius: 4px; font-size: 0.85em;" %>
-        <%= fc.submit "Crear Categoría", style: "background-color: #5f6368; color: white; border: none; padding: 7px 12px; border-radius: 4px; font-size: 0.85em; font-weight: 600; cursor: pointer;" %>
+  <!-- BANDEJA: ÚLTIMOS ARTÍCULOS VENDIDOS -->
+  <div style="background: white; border: 1px solid #dadce0; border-radius: 12px; padding: 20px; margin-bottom: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.04);">
+    <h3 style="margin: 0 0 16px 0; font-size: 1.1em; color: #202124; display: flex; align-items: center; gap: 8px;">
+      <span>📦</span> Últimos artículos vendidos
+    </h3>
+
+    <% if @recent_sales.any? %>
+      <div style="overflow-x: auto;">
+        <table style="width: 100%; border-collapse: collapse; font-size: 0.9em;">
+          <thead>
+            <tr style="border-bottom: 1px solid #dadce0; color: #5f6368; text-align: left;">
+              <th style="padding: 10px 12px;">Producto</th>
+              <th style="padding: 10px 12px;">Comprador</th>
+              <th style="padding: 10px 12px; text-align: center;">Cantidad</th>
+              <th style="padding: 10px 12px; text-align: right;">Total</th>
+              <th style="padding: 10px 12px; text-align: right;">Fecha</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @recent_sales.each do |item| %>
+              <tr style="border-bottom: 1px solid #f1f3f4;">
+                <td style="padding: 12px; font-weight: 600; color: #202124;"><%= item.product.name %></td>
+                <td style="padding: 12px; color: #5f6368;">@<%= item.order.user.display_name %></td>
+                <td style="padding: 12px; text-align: center;"><%= item.quantity %> pz</td>
+                <td style="padding: 12px; text-align: right; color: #137333; font-weight: bold;"><%= number_to_currency(item.quantity * item.unit_price) %></td>
+                <td style="padding: 12px; text-align: right; color: #80868b; font-size: 0.85em;"><%= time_ago_in_words(item.created_at) %> atrás</td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    <% else %>
+      <p style="margin: 0; color: #5f6368; font-style: italic; font-size: 0.9em;">Aún no se han registrado ventas de tus productos.</p>
+    <% end %>
+  </div>
+
+  <!-- SECCIÓN: INVENTARIO DE PRODUCTOS Y FORMULARIO -->
+  <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 24px; align-items: start;">
+    
+    <!-- TABLA DE PRODUCTOS -->
+    <div style="background: white; border: 1px solid #dadce0; border-radius: 12px; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.04);">
+      <h3 style="margin: 0 0 16px 0; font-size: 1.1em; color: #202124;">Tus Productos en Inventario</h3>
+      
+      <% if @products.any? %>
+        <div style="overflow-x: auto;">
+          <table style="width: 100%; border-collapse: collapse; font-size: 0.9em;">
+            <thead>
+              <tr style="border-bottom: 1px solid #dadce0; color: #5f6368; text-align: left;">
+                <th style="padding: 10px 12px;">Producto</th>
+                <th style="padding: 10px 12px;">Categoría</th>
+                <th style="padding: 10px 12px;">Precio</th>
+                <th style="padding: 10px 12px; text-align: center;">Stock</th>
+                <th style="padding: 10px 12px; text-align: center;">Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @products.each do |product| %>
+                <tr style="border-bottom: 1px solid #f1f3f4;">
+                  <td style="padding: 12px; font-weight: 600; color: #202124;"><%= product.name %></td>
+                  <td style="padding: 12px; color: #5f6368;"><%= product.category&.name || 'Sin categoría' %></td>
+                  <td style="padding: 12px; font-weight: bold; color: #137333;"><%= number_to_currency(product.price) %></td>
+                  <td style="padding: 12px; text-align: center;">
+                    <span style="padding: 4px 8px; border-radius: 6px; font-weight: bold; font-size: 0.85em; background: <%= product.stock > 0 ? '#e6f4ea' : '#fce8e6' %>; color: <%= product.stock > 0 ? '#137333' : '#c5221f' %>;">
+                      <%= product.stock %> pz
+                    </span>
+                  </td>
+                  <td style="padding: 12px; text-align: center; white-space: nowrap;">
+                    <%= link_to "Ver", product_path(product), style: "color: #1a73e8; text-decoration: none; margin-right: 8px; font-weight: 600;" %>
+                    <%= link_to "Editar", edit_product_path(product), style: "color: #5f6368; text-decoration: none; margin-right: 8px; font-weight: 600;" %>
+                    <%= link_to "Eliminar", product_path(product), data: { turbo_method: :delete, turbo_confirm: "¿Estás seguro de eliminar #{product.name}?" }, style: "color: #d93025; text-decoration: none; font-weight: 600;" %>
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      <% else %>
+        <p style="margin: 0; color: #5f6368; font-style: italic; font-size: 0.9em;">Aún no has agregado ningún producto a tu catálogo.</p>
       <% end %>
-
-    </div>
-  </div>
-
-  <!-- 3. FORMULARIO DE ALTA RÁPIDA DE PRODUCTO -->
-
-  <div id="nuevo-producto" style="background: white; border: 1px solid #dadce0; border-radius: 8px; padding: 22px; box-shadow: 0 1px 3px rgba(0,0,0,0.04);">
-
-  <div style="background: white; border: 1px solid #dadce0; border-radius: 8px; padding: 22px; box-shadow: 0 1px 3px rgba(0,0,0,0.04);">
-    <h3 style="margin: 0 0 18px 0; color: #202124; font-size: 1.15em;"> Agregar Nuevo Producto</h3>
-
-    <% if @product&.errors&.any? %>
-      <div style="color: #c5221f; background-color: #fce8e6; padding: 12px 16px; border: 1px solid #fad2cf; margin-bottom: 18px; border-radius: 6px;">
-        <strong style="display: block; margin-bottom: 5px;">Por favor revisa los errores:</strong>
-        <ul style="margin: 0; padding-left: 20px;">
-          <% @product.errors.full_messages.each do |msg| %>
-            <li><%= msg %></li>
-          <% end %>
-        </ul>
-      </div>
-    <% end %>
-
-    <%= form_with(model: @product, local: true, style: "display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-end;") do |f| %>
-      
-      <div style="flex: 1.5; min-width: 170px;">
-      <%= f.label :image, "Foto del Producto:", style: "display: block; font-weight: 600; margin-bottom: 6px; font-size: 0.85em; color: #3c4043;" %>
-      <%= f.file_field :image, accept: "image/png,image/jpeg,image/webp", style: "width: 100%; padding: 6px 0; font-size: 0.85em;" %>
-      </div>
-
-      <div style="flex: 2; min-width: 200px;">
-        <%= f.label :name, "Nombre del Producto *", style: "display: block; font-weight: 600; margin-bottom: 6px; font-size: 0.85em; color: #3c4043;" %>
-        <%= f.text_field :name, placeholder: "Ej. Camisa Oversize", required: true, style: "width: 100%; padding: 9px 12px; border: 1px solid #dadce0; border-radius: 6px; box-sizing: border-box; font-size: 0.95em;" %>
-      </div>
-
-      <div style="flex: 1.5; min-width: 170px;">
-        <%= f.label :category_id, "Categoría", style: "display: block; font-weight: 600; margin-bottom: 6px; font-size: 0.85em; color: #3c4043;" %>
-        <%= f.collection_select :category_id, (@categories || []), :id, :name, { prompt: "-- Seleccionar Categoría --" }, { style: "width: 100%; padding: 9px 12px; border: 1px solid #dadce0; border-radius: 6px; box-sizing: border-box; background-color: white; font-size: 0.95em;" } %>
-      </div>
-
-      <div style="flex: 1; min-width: 120px;">
-        <%= f.label :price, "Precio ($) *", style: "display: block; font-weight: 600; margin-bottom: 6px; font-size: 0.85em; color: #3c4043;" %>
-        <%= f.number_field :price, step: "0.01", min: "0", placeholder: "0.00", required: true, style: "width: 100%; padding: 9px 12px; border: 1px solid #dadce0; border-radius: 6px; box-sizing: border-box; font-size: 0.95em;" %>
-      </div>
-
-      <div style="flex: 1; min-width: 120px;">
-        <%= f.label :stock, "Stock Inicial *", style: "display: block; font-weight: 600; margin-bottom: 6px; font-size: 0.85em; color: #3c4043;" %>
-        <%= f.number_field :stock, min: "0", placeholder: "0", required: true, style: "width: 100%; padding: 9px 12px; border: 1px solid #dadce0; border-radius: 6px; box-sizing: border-box; font-size: 0.95em;" %>
-      </div>
-
-      <div style="flex: 1; min-width: 150px;">
-        <%= f.submit "Guardar Producto", style: "width: 100%; background-color: #1a73e8; color: white; border: none; padding: 10px 16px; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 0.9em;" %>
-      </div>
-    <% end %>
-  </div>
-
-  <!-- 4. TABLA DE INVENTARIO -->
-  <div style="background: white; border: 1px solid #dadce0; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.04);">
-    <div style="padding: 16px 22px; border-bottom: 1px solid #ebebeb;">
-      <h3 style="margin: 0; color: #202124; font-size: 1.15em;">Productos en Inventario</h3>
     </div>
 
-    <table border="0" cellpadding="14" style="border-collapse: collapse; width: 100%; text-align: left;">
-      <thead>
-        <tr style="background-color: #f8f9fa; border-bottom: 2px solid #e0e0e0; color: #5f6368; font-size: 0.8em; text-transform: uppercase; letter-spacing: 0.5px;">
-          <th>Producto</th>
-          <th>Categoría</th>
-          <th style="text-align: right;">Precio</th>
-          <th style="text-align: center;">Stock</th>
-          <th style="text-align: center;">Acciones</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% if @products.any? %>
-          <% @products.each do |product| %>
-            <tr style="border-bottom: 1px solid #f1f3f4;">
-              <td><strong><%= product.name %></strong></td>
-              <td style="color: #5f6368;">
-                <% if product.category.present? %>
-                  <span style="background-color: #e8f0fe; color: #1a73e8; padding: 2px 8px; border-radius: 10px; font-size: 0.85em; font-weight: 500;"><%= product.category.name %></span>
-                <% else %>
-                  <span style="color: #80868b; font-size: 0.85em;">—</span>
-                <% end %>
-              </td>
-              <td style="text-align: right; font-weight: 600; color: #202124;"><%= number_to_currency(product.price) %></td>
-              <td style="text-align: center;">
-                <% if product.stock > 5 %>
-                  <span style="background-color: #e6f4ea; color: #137333; padding: 4px 10px; border-radius: 12px; font-size: 0.85em; font-weight: 600;"><%= product.stock %> un.</span>
-                <% elsif product.stock > 0 %>
-                  <span style="background-color: #fef7e0; color: #b06000; padding: 4px 10px; border-radius: 12px; font-size: 0.85em; font-weight: 600;"><%= product.stock %> un. (Bajo)</span>
-                <% else %>
-                  <span style="background-color: #fce8e6; color: #c5221f; padding: 4px 10px; border-radius: 12px; font-size: 0.85em; font-weight: 600;">Agotado</span>
-                <% end %>
-              </td>
-              <td style="text-align: center;">
-                <div style="display: flex; gap: 10px; justify-content: center; align-items: center;">
-                  <% if product.stock > 0 %>
-                    <%= button_to " Vender 1", sell_product_path(product), method: :post, style: "background-color: #008060; color: white; border: none; padding: 6px 12px; border-radius: 4px; font-size: 0.82em; font-weight: 600; cursor: pointer;" %>
-                  <% end %>
-                  <%= link_to "Editar", edit_product_path(product), style: "color: #1a73e8; text-decoration: none; font-size: 0.85em; font-weight: 500;" %>
-                  <%= button_to "Eliminar", product_path(product), method: :delete, data: { turbo_confirm: "¿Deseas eliminar este producto?" }, style: "background: none; border: none; color: #d93025; font-size: 0.85em; cursor: pointer; text-decoration: underline; padding: 0;" %>
-                </div>
-              </td>
-            </tr>
-          <% end %>
-        <% else %>
-          <tr>
-            <td colspan="5" style="text-align: center; color: #5f6368; padding: 35px 20px;">
-              No tienes productos registrados todavía. Utiliza el formulario superior para añadir tu primer artículo.
-            </td>
-          </tr>
+    <!-- FORMULARIO: CREAR NUEVO PRODUCTO -->
+    <div style="background: white; border: 1px solid #dadce0; border-radius: 12px; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.04);">
+      <h3 style="margin: 0 0 16px 0; font-size: 1.1em; color: #202124;">Agregar Nuevo Producto</h3>
+
+      <%= form_with model: @product, local: true do |f| %>
+        <% if @product.errors.any? %>
+          <div style="background: #fce8e6; color: #c5221f; padding: 10px; border-radius: 8px; font-size: 0.85em; margin-bottom: 12px;">
+            <strong>Errores al guardar:</strong>
+            <ul style="margin: 4px 0 0 0; padding-left: 16px;">
+              <% @product.errors.full_messages.each do |msg| %>
+                <li><%= msg %></li>
+              <% end %>
+            </ul>
+          </div>
         <% end %>
-      </tbody>
-    </table>
-  </div>
 
-  <!-- 5. HISTORIAL DE VENTAS -->
-  <div style="background: white; border: 1px solid #dadce0; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.04); margin-bottom: 20px;">
-    <div style="padding: 16px 22px; border-bottom: 1px solid #ebebeb;">
-      <h3 style="margin: 0; color: #202124; font-size: 1.15em;">🧾 Historial de Ventas Recientes</h3>
+        <div style="margin-bottom: 12px;">
+          <%= f.label :name, "Nombre del producto", style: "display: block; font-size: 0.85em; font-weight: bold; margin-bottom: 4px; color: #3c4043;" %>
+          <%= f.text_field :name, placeholder: "Ej. Balón de fútbol", required: true, style: "width: 100%; box-sizing: border-box; padding: 8px 10px; border: 1px solid #dadce0; border-radius: 6px;" %>
+        </div>
+
+        <div style="margin-bottom: 12px;">
+          <%= f.label :category_id, "Categoría", style: "display: block; font-size: 0.85em; font-weight: bold; margin-bottom: 4px; color: #3c4043;" %>
+          <%= f.collection_select :category_id, @categories, :id, :name, { prompt: "Seleccionar categoría" }, { style: "width: 100%; box-sizing: border-box; padding: 8px 10px; border: 1px solid #dadce0; border-radius: 6px;" } %>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px;">
+          <div>
+            <%= f.label :price, "Precio ($)", style: "display: block; font-size: 0.85em; font-weight: bold; margin-bottom: 4px; color: #3c4043;" %>
+            <%= f.number_field :price, step: 0.01, min: 0, placeholder: "0.00", required: true, style: "width: 100%; box-sizing: border-box; padding: 8px 10px; border: 1px solid #dadce0; border-radius: 6px;" %>
+          </div>
+          <div>
+            <%= f.label :stock, "Stock (pz)", style: "display: block; font-size: 0.85em; font-weight: bold; margin-bottom: 4px; color: #3c4043;" %>
+            <%= f.number_field :stock, min: 0, placeholder: "0", required: true, style: "width: 100%; box-sizing: border-box; padding: 8px 10px; border: 1px solid #dadce0; border-radius: 6px;" %>
+          </div>
+        </div>
+
+        <div style="margin-bottom: 16px;">
+          <%= f.label :image, "Imagen del producto", style: "display: block; font-size: 0.85em; font-weight: bold; margin-bottom: 4px; color: #3c4043;" %>
+          <%= f.file_field :image, accept: "image/*", style: "width: 100%; box-sizing: border-box; font-size: 0.85em;" %>
+        </div>
+
+        <%= f.submit "Publicar Producto", style: "width: 100%; background: #1a73e8; color: white; border: none; padding: 10px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 0.95em;" %>
+      <% end %>
     </div>
 
-    <table border="0" cellpadding="14" style="border-collapse: collapse; width: 100%; text-align: left;">
-      <thead>
-        <tr style="background-color: #f8f9fa; border-bottom: 2px solid #e0e0e0; color: #5f6368; font-size: 0.8em; text-transform: uppercase; letter-spacing: 0.5px;">
-          <th>Producto Vendido</th>
-          <th style="text-align: right;">Monto</th>
-          <th style="text-align: right;">Fecha y Hora</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% if @recent_sales.present? && @recent_sales.any? %>
-          <% @recent_sales.each do |sale| %>
-            <tr style="border-bottom: 1px solid #f1f3f4;">
-              <td><strong><%= sale.product&.name || "Producto no disponible" %></strong></td>
-              <td style="text-align: right; color: #137333; font-weight: 600;"><%= number_to_currency(sale.price) %></td>
-              <td style="text-align: right; color: #5f6368; font-size: 0.9em;"><%= sale.created_at.strftime("%d/%m/%Y %H:%M") %></td>
-            </tr>
-          <% end %>
-        <% else %>
-          <tr>
-            <td colspan="3" style="text-align: center; color: #5f6368; padding: 25px;">
-              No hay registros de ventas recientes. Haz clic en <strong> Vender 1</strong> para ver el historial aquí.
-            </td>
-          </tr>
-        <% end %>
-      </tbody>
-    </table>
   </div>
 
 </div>
