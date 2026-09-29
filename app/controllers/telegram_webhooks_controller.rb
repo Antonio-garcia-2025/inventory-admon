@@ -1,8 +1,7 @@
 class TelegramWebhooksController < ApplicationController
   # Por seguridad, Rails bloquea peticiones externas que no vienen de tus propios formularios HTML.
   # Como esta petición viene de los servidores de Telegram, le decimos a Rails que la deje pasar.
-  skip_before_action :verify_authenticity_token
-
+skip_before_action :verify_authenticity_token
   def receive
     # 1. Telegram nos manda un paquete de datos (params) gigante.
     # Primero verificamos si el paquete realmente contiene un "message".
