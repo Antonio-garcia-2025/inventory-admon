@@ -20,8 +20,11 @@ class TelegramWebhooksController < ApplicationController
           usuario_encontrado = User.find_by(email: correo)
           
           if usuario_encontrado
+            User.where(telegram_chat_id: chat_id).update_all(telegram_chat_id: nil)
+
             usuario_encontrado.update(telegram_chat_id: chat_id)
-            respuesta = "✅ ¡Cuenta vinculada exitosamente! Tu correo #{correo} ya está conectado. Escribe /stock para ver tus productos."
+
+            respuesta = "Cambio de cuenta exito! Tu Telegram ahora está conectado al correo #{correo}. Escribe /stock para ver tus productos"
           else
             respuesta = "❌ No encontré ningún usuario con el correo #{correo}. Verifica que esté bien escrito."
           end
