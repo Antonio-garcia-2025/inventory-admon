@@ -1,43 +1,60 @@
-# inventory — Gestión de Inventario y Ventas
+Markdown
+# Inventary-Admon
 
-> [Read in English](README.md)
+[English version below](#english-version)
 
-Aplicación web de control de inventario y ventas desarrollada con **Ruby on Rails 8**. Cuenta con autenticación de usuarios, aislamiento de datos, control de existencias, transacciones de venta, métricas en tiempo real, categorización y exportación de reportes a Excel (CSV).
+Un sistema robusto de gestión de inventarios desarrollado con Ruby on Rails, que cuenta con la integración de un bot de Telegram. Esta aplicación permite a los usuarios registrados vincular de forma segura sus cuentas y consultar las existencias y precios de sus productos en tiempo real mediante un chat interactivo.
 
----
+## Características
 
-##  Funcionalidades Principales
+* Arquitectura Multi-usuario: Cada usuario gestiona y consulta exclusivamente su propio inventario.
+* Integración con Telegram: Comunicación segura mediante webhooks entre la API de Telegram y el servidor de Rails.
+* Vinculación de Cuentas: Los usuarios pueden enlazar su cuenta web con su identificador de chat de Telegram utilizando el comando /vincular.
+* Menús Interactivos: Teclado personalizado en formato HTML dentro de Telegram para consultas rápidas de inventario sin necesidad de escribir comandos manualmente.
+* Widget Flotante: Un botón de interfaz de usuario en la aplicación web que redirige directamente al bot de Telegram.
 
- **Autenticación Multi-Usuario:** Registro, inicio y cierre de sesión seguro mediante `Devise`, con aislamiento total de datos por usuario.
- **CRUD Completo de Productos:** Alta, edición, visualización y eliminación de artículos con validación de datos.
- **Sistema de Categorías (1 a N):** Organización de catálogo por categorías asociadas a cada usuario.
- **Búsqueda y Filtros Combinados:** Búsqueda en tiempo real por nombre de producto y filtrado por categoría.
- **Gestión de Stock y Ventas:** Botón "Vender 1" con decremento de existencias y registro histórico mediante transacciones atómicas de base de datos.
- **Dashboard de Métricas:** Tarjetas informativas con cálculo automático de:
- Ganancias totales por ventas realizadas.
- Valor total acumulado en inventario.
- Contador de artículos agotados (stock en 0).
- **Exportación a CSV:** Descarga del inventario completo en formato CSV compatible con Microsoft Excel y Google Sheets.
+## Tecnologías Utilizadas
 
----
+* Backend: Ruby on Rails
+* Base de Datos: PostgreSQL
+* Peticiones API: HTTParty
+* Despliegue: Render
 
-##  Tecnologías Utilizadas
+## Configuración e Instalación
 
-**Backend:** Ruby on Rails 8
-**Base de Datos:** SQLite3
-**Autenticación:** Devise
-**Manejo de Reportes:** Librería estándar `csv` de Ruby
-**Frontend:** Vistas dinámicas con ERB y diseño estructurado
+1. Clonar el repositorio:
+   ```bash
+   git clone [https://github.com/Antonio-garcia-2025/inventary-admon.git](https://github.com/Antonio-garcia-2025/inventary-admon.git)
+   cd inventary-admon
+Instalar dependencias:
 
----
+Bash
+bundle install
+Configuración de la base de datos:
+Ejecutar los siguientes comandos para crear la base de datos y correr las migraciones (incluyendo la columna telegram_chat_id para los usuarios):
 
-##  Instalación y Configuración Local
+Bash
+rails db:create
+rails db:migrate
+Variables de Entorno:
+Es necesario configurar el token del bot de Telegram. Agrégalo a las variables de entorno en Render, o localmente usando:
 
-### Requisitos Previos
+Plaintext
+TELEGRAM_BOT_TOKEN=tu_token_aqui
+Configuración del Webhook:
+Para conectar el bot a la aplicación, visita la siguiente URL en tu navegador, reemplazando los valores por tu Token y tu URL de Render:
+https://api.telegram.org/bot<TU_TOKEN>/setWebhook?url=https://<TU_URL_DE_RENDER>/telegram_webhook
 
-**Ruby** (>= 3.3.0)
-**Rails** (>= 8.0)
-**Git**
+Comandos del Bot de Telegram
+/start - Muestra el mensaje de bienvenida y las instrucciones del sistema.
 
-### Render 
-https://shopify-z885.onrender.com/users/sign_in
+/vincular [tu_correo@ejemplo.com] - Enlaza el chat actual de Telegram con la cuenta de usuario especificada en la base de datos.
+
+/stock (o mediante el botón del teclado) - Obtiene y muestra las existencias y precios actuales del inventario del usuario.
+
+Licencia
+Este proyecto es de código abierto y está disponible bajo la Licencia MIT.
+
+
+Te invito a visitar y probar la implementación:
+https://shopify-z885.onrender.com/

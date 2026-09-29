@@ -1,43 +1,59 @@
-# inventory — Inventory & Sales Management
+A robust inventory management system built with Ruby on Rails, featuring a fully integrated Telegram bot. This application allows registered users to securely bind their Telegram accounts and check their personal product stock and prices in real-time through an interactive Telegram chat.
 
-> [Leer en Español](README.es.md)
+Features
+Multi-User Architecture: Each user manages and queries their own inventory exclusively.
 
-A complete inventory and sales management web application built with **Ruby on Rails 8**. It allows multi-user management, real-time inventory tracking, categorization, stock decrement transactions, metric dashboards, and CSV report exports.
+Telegram Bot Integration: Secure webhook communication between Telegram APIs and the Rails backend.
 
----
+Account Binding: Users can link their web account to their Telegram chat ID using the /vincular  command.
 
-##  Features
+Interactive Menus: Custom Telegram HTML keyboard buttons for quick stock consultation without manually typing commands.
 
-**Multi-User Authentication:** Secure user registration, session management, and data isolation powered by `Devise`.
-**Full Product CRUD:** Add, list, edit, and delete products with validations.
-**Category System (1-to-N):** Organize products by user-defined categories.
-**Live Search & Filters:** Filter products instantly by text search and category dropdowns.
-**Stock & Sales Transactions:** Single-click "Sell 1" action with stock verification and atomic transactions.
- **Business Metrics Dashboard:** Real-time summary cards for:
- Total earnings from sales.
- Total monetary value of current inventory.
- Out-of-stock item counter.
- **CSV Export:** Download full inventory reports compatible with Microsoft Excel and Google Sheets.
+Floating Widget: A direct floating UI button in the web application that redirects users to the Telegram bot.
 
----
+Tech Stack
+Backend: Ruby on Rails
 
-##  Tech Stack
+Database: PostgreSQL
 
- **Backend:** Ruby on Rails 8
- **Database:** SQLite3
- **Authentication:** Devise
- **Data Export:** Ruby Standard Library (`csv`)
- **Frontend:** ERB, Responsive CSS
+API Requests: HTTParty
 
----
+Deployment: Render
 
+Setup and Installation
+Clone the repository:
 
-### Prerequisites
+Bash
+git clone [https://github.com/Antonio-garcia-2025/inventary-admon.git](https://github.com/Antonio-garcia-2025/inventary-admon.git)
+cd inventary-admon
+Install dependencies:
 
-Ensure you have the following installed:
- **Ruby** (>= 3.3.0)
- **Rails** (>= 8.0)
- **Git**
+Bash
+bundle install
+Database Setup:
+Run the following commands to create the database and run the migrations (including the telegram_chat_id column for users):
 
-### Render
-https://shopify-z885.onrender.com/users/sign_in
+Bash
+rails db:create
+rails db:migrate
+Environment Variables:
+You need to set up your Telegram Bot token. Add it to your environment variables in Render, or locally, using:
+
+Plaintext
+TELEGRAM_BOT_TOKEN=your_bot_token_here
+Set up the Webhook:
+To connect your bot to the application, manually visit the following URL in your browser, replacing the placeholders with your actual Bot Token and Render URL:
+https://api.telegram.org/bot<YOUR_BOT_TOKEN>/setWebhook?url=https://<YOUR_RENDER_URL>/telegram_webhook
+
+Telegram Bot Commands
+/start - Displays the welcome message and instructions.
+
+/vincular [your_email@example.com] - Links the current Telegram chat to the specified user account in the database.
+
+/stock (or using the custom keyboard button) - Fetches and displays the user's current inventory stock and prices.
+
+License
+This project is open-source and available under the MIT License.
+
+I invite you to visit and try out the deployment:
+https://shopify-z885.onrender.com/
