@@ -3,7 +3,7 @@ class TelegramBot
   base_uri "https://api.telegram.org"
 
   def initialize
-    @token = ENV["TELEGRAM_BOT_TOKEN"].presence || "743639632:AAFhXnY3hEc2ssMauDtbU8YzEN5j-A86g2I"
+    @token = ENV["TELEGRAM_BOT_TOKEN"].presence || ""
   end
 
   # Agregamos un tercer parámetro opcional llamado 'mostrar_botones'
