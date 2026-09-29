@@ -27,4 +27,10 @@ Rails.application.routes.draw do
 
   #historial de pedidos del comprador
   resources :orders, only: [:index, :show]
+
+  # Esta ruta recibe peticiones POST de Telegram.
+  # Le dice a Rails: "Si alguien manda datos a '/telegram_webhook', 
+  # envíalos al controlador 'telegram_webhooks' y ejecuta el método 'receive'".
+  post '/telegram_webhook', to: 'telegram_webhooks#receive'
+
 end
