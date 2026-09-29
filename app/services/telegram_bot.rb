@@ -1,22 +1,36 @@
 class TelegramBot
   include HTTParty
-  # Quitamos el "/bot" de aquí para evitar diagonales duplicadas
   base_uri "https://api.telegram.org"
 
   def initialize
-    # Intentará usar la variable de entorno, pero si Render no la tiene, usará tu token directamente para que funcione sí o sí.
     @token = ENV["TELEGRAM_BOT_TOKEN"].presence || "8743639632:AAFdSPNwCSPJWelh4NVQx-53ba9fbalDdZ4"
   end
 
-  def send_message(chat_id, text)
-    # Pegamos la palabra bot directamente al token como lo exige Telegram
-    respuesta = self.class.post("/bot#{@token}/sendMessage", body: {
+  # Agregamos un tercer parámetro opcional llamado 'mostrar_botones'
+  def send_message(chat_id, text, mostrar_botones = false)
+    cuerpo = {
       chat_id: chat_id,
       text: text,
-      parse_mode: "Markdown"
-    })
+      parse_mode: "HTML"
+    }
+
+    # Si le decimos al código que muestre botones, agrega el teclado a la respuesta
+    if mostrar_botones
+      cuerpo[:reply_markup] = {
+        keyboard: [
+          [{ text: "📦 Consultar Inventario" }] # Puedes agregar más botones aquí en el futuro
+        ],
+        resize_keyboard: true, # Hace que el botón sea más delgado y estético
+        one_time_keyboard: false
+      }
+    end
+
+    # Usamos .to_json y declaramos el Content-Type para que Telegram entienda el teclado
+    respuesta = self.class.post("/bot#{@token}/sendMessage", 
+      headers: { 'Content-Type' => 'application/json' },
+      body: cuerpo.to_json
+    )
     
-    # Esto imprimirá en los logs de Render exactamente qué responde Telegram al intentar enviar
     puts "=== RESPUESTA DE TELEGRAM AL ENVIAR: #{respuesta.body} ==="
   end
 end

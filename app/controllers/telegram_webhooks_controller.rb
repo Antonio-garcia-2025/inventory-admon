@@ -4,16 +4,14 @@ class TelegramWebhooksController < ApplicationController
 
   def receive
     if params[:message].present?
-      # Guardamos el ID como texto (string) por seguridad, ya que los IDs de Telegram son números muy grandes
       chat_id = params[:message][:chat][:id].to_s 
       texto_usuario = params[:message][:text].to_s.strip
-
-      # 1. Identificamos si el chat ya pertenece a un usuario en la base de datos
       usuario_actual = User.find_by(telegram_chat_id: chat_id)
+      
+      # Creamos una variable para saber si debemos mostrar el teclado
+      mostrar_botones = false
 
-      # 2. Lógica de comandos
       if texto_usuario.start_with?('/vincular')
-        # Separamos el comando del correo (Ej. "/vincular admin@correo.com")
         correo = texto_usuario.split(' ')[1]
         
         if correo.present?
@@ -21,27 +19,28 @@ class TelegramWebhooksController < ApplicationController
           
           if usuario_encontrado
             User.where(telegram_chat_id: chat_id).update_all(telegram_chat_id: nil)
-
             usuario_encontrado.update(telegram_chat_id: chat_id)
-
-            respuesta = "Cambio de cuenta exito! Tu Telegram ahora está conectado al correo #{correo}. Escribe /stock para ver tus productos"
+            
+            respuesta = "✅ ¡Cuenta vinculada exitosamente!\n\nUsa el nuevo botón en tu teclado para consultar tus productos."
+            mostrar_botones = true # Activamos el botón porque ya se vinculó
           else
             respuesta = "❌ No encontré ningún usuario con el correo #{correo}. Verifica que esté bien escrito."
           end
         else
-          respuesta = "⚠️ Para vincular tu cuenta, escribe /vincular seguido de tu correo.\nEjemplo: /vincular mi_correo@ejemplo.com"
+          respuesta = "⚠️ Para vincular tu cuenta, escribe /vincular seguido de tu correo."
         end
 
       elsif texto_usuario == '/start'
         respuesta = "¡Hola! Soy el bot de inventary-admon.\nPara empezar, vincula tu cuenta escribiendo:\n/vincular tu_correo@ejemplo.com"
         
-      elsif texto_usuario == '/stock'
+      # Fíjate cómo ahora aceptamos el comando /stock O el texto que envía el botón
+      elsif texto_usuario == '/stock' || texto_usuario == '📦 Consultar Inventario'
         if usuario_actual
-          # Ahora solo traemos los productos de ESTE usuario, no los de toda la base de datos
           productos = usuario_actual.products 
+          mostrar_botones = true # Mantenemos el botón visible
           
           if productos.any?
-            respuesta = "📦 *Tu Inventario Actual:*\n\n"
+            respuesta = "📦 <b>Tu Inventario Actual:</b>\n\n"
             productos.each do |p|
               respuesta += "• #{p.name}: #{p.stock} unidades ($#{p.price})\n"
             end
@@ -49,16 +48,17 @@ class TelegramWebhooksController < ApplicationController
             respuesta = "Tu inventario está vacío en este momento."
           end
         else
-          # Si no está vinculado, le negamos el acceso al stock
           respuesta = "🔒 Primero debes vincular tu cuenta para ver tu inventario. Escribe:\n/vincular tu_correo@ejemplo.com"
         end
         
       else
-        respuesta = "No reconozco ese comando. Intenta con /stock o /vincular"
+        respuesta = "No reconozco ese comando."
+        mostrar_botones = true if usuario_actual
       end
 
+      # Enviamos la respuesta junto con la instrucción de mostrar (o no) los botones
       bot = TelegramBot.new
-      bot.send_message(chat_id, respuesta)
+      bot.send_message(chat_id, respuesta, mostrar_botones)
     end
 
     head :ok
