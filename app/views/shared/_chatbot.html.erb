@@ -1,0 +1,248 @@
+<!-- 1. LOS ESTILOS (CSS DIRECTO) -->
+<style>
+  #chatbot-flotante {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 320px;
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.2);
+    z-index: 9999; /* Máxima prioridad para que nada lo tape */
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  }
+
+  /* Estado minimizado */
+  #chatbot-flotante.chat-minimizado .chat-body,
+  #chatbot-flotante.chat-minimizado .chat-footer {
+    display: none;
+  }
+
+  .chat-header {
+    background-color: #0d6efd;
+    color: white;
+    padding: 12px 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+  }
+
+  .chat-header h4 { margin: 0; font-size: 16px; font-weight: 600; }
+
+  .btn-minimizar {
+    background: none; border: none; color: white;
+    font-size: 22px; font-weight: bold; cursor: pointer;
+    padding: 0; line-height: 1; outline: none;
+  }
+
+  .chat-body {
+    padding: 15px; height: 300px; overflow-y: auto; background-color: #f8f9fa;
+    scroll-behavior: smooth;
+  }
+
+  .mensaje-ia {
+    background-color: #e2f0fd; padding: 8px 12px; border-radius: 8px;
+    font-size: 14px; color: #084298; margin-bottom: 8px;
+    width: fit-content; max-width: 85%;
+  }
+
+  .mensaje-usuario {
+    background-color: #d1e7dd; padding: 8px 12px; border-radius: 8px;
+    font-size: 14px; color: #0f5132; margin-bottom: 8px; margin-left: auto;
+    width: fit-content; max-width: 85%;
+  }
+
+  .chat-footer {
+    padding: 10px; background-color: white; border-top: 1px solid #ddd;
+    display: flex; gap: 8px;
+  }
+
+  .chat-footer input[type="text"] {
+    flex-grow: 1; padding: 8px 12px; border: 1px solid #ccc;
+    border-radius: 20px; outline: none; font-size: 14px;
+  }
+
+  .btn-enviar-chat {
+    background-color: #198754; color: white; border: none;
+    padding: 8px 16px; border-radius: 20px; cursor: pointer;
+    font-weight: bold; font-size: 14px; transition: background 0.2s;
+  }
+  
+  .btn-enviar-chat:hover { background-color: #146c43; }
+
+  /* Animación de "Escribiendo..." */
+.escribiendo {
+  font-style: italic;
+  color: #6c757d;
+  background-color: #e9ecef;
+  animation: parpadeo 1.5s infinite;
+}
+
+@keyframes parpadeo {
+  0% { opacity: 0.4; }
+  50% { opacity: 1; }
+  100% { opacity: 0.4; }
+}
+</style>
+
+<!-- 2. LA ESTRUCTURA (HTML) -->
+<div id="chatbot-flotante" class="chat-minimizado">
+  <div class="chat-header" id="header-chat">
+    <h4>🤖 chat de Soporte</h4>
+    <button class="btn-minimizar" id="btn-minimizar-chat">＋</button>
+  </div>
+  
+  <div class="chat-body" id="chat-mensajes">
+    <div class="mensaje-ia"><strong>chat de Soporte:</strong> ¡Hola! ¿En qué te ayudo hoy?</div>
+  </div>
+
+  <div class="chat-footer">
+    <input type="text" id="input-chat" placeholder="Escribe tu pregunta..." autocomplete="off">
+    <button class="btn-enviar-chat" id="btn-enviar-chat">Enviar</button>
+  </div>
+</div>
+
+<!-- 3. LA LÓGICA (JAVASCRIPT) -->
+<script>
+  const chatbotBox = document.getElementById('chatbot-flotante');
+  const btnMinimizar = document.getElementById('btn-minimizar-chat');
+  const headerChat = document.getElementById('header-chat');
+
+  function toggleChat() {
+    chatbotBox.classList.toggle('chat-minimizado');
+    if (chatbotBox.classList.contains('chat-minimizado')) {
+      btnMinimizar.innerHTML = '＋';
+    } else {
+      btnMinimizar.innerHTML = '−';
+      document.getElementById('input-chat').focus();
+    }
+  }
+
+  btnMinimizar.addEventListener('click', toggleChat);
+  headerChat.addEventListener('click', function(e) {
+    if (e.target !== btnMinimizar) toggleChat();
+  });
+
+  document.getElementById('btn-enviar-chat').addEventListener('click', enviarMensaje);
+  document.getElementById('input-chat').addEventListener('keypress', function (e) {
+    if (e.key === 'Enter') enviarMensaje();
+  });
+
+  function enviarMensaje() {
+    const input = document.getElementById('input-chat');
+    const mensaje = input.value.trim();
+    if (mensaje === '') return;
+
+    const chatCaja = document.getElementById('chat-mensajes');
+
+    inputChat.disabled = true;
+    btnEnviar.disabled = true;
+    btnEnviar.style.opacity = 0.6;
+
+    chatCaja.innerHTML += `<div class="mensaje-usuario">👤<strong>Tú:</strong> ${mensaje}</div>`;
+    input.value = '';
+
+    const idTemporal = "typing-" + Date.now();
+    chatCaja.innerHTML += `<div class="mensaje-ia" id="${idTemporal}">🤖<strong>IA:</strong> <span class="escribiendo">Escribiendo...</span></div>`;
+    chatCaja.scrollTop = chatCaja.scrollHeight;
+
+    fetch('/chat/preguntar', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content
+      },
+      body: JSON.stringify({ mensaje: mensaje })
+    })
+    .then(response => response.json())
+    .then(data => {
+      chatCaja.innerHTML += `<div class="mensaje-ia">🤖<strong>chat de Soporte:</strong> ${data.respuesta}</div>`;
+      chatCaja.scrollTop = chatCaja.scrollHeight;
+    });
+  }
+</script>
+<script>
+  // Escuchamos el evento de Turbo en lugar de la carga normal de la página
+  document.addEventListener("turbo:load", function() {
+    const chatbotBox = document.getElementById('chatbot-flotante');
+    const btnMinimizar = document.getElementById('btn-minimizar-chat');
+    const headerChat = document.getElementById('header-chat');
+    const inputChat = document.getElementById('input-chat');
+    const btnEnviar = document.getElementById('btn-enviar-chat');
+
+    // Si estamos en una página sin chat, detenemos el script para evitar errores
+    if (!chatbotBox) return;
+
+    function toggleChat() {
+      chatbotBox.classList.toggle('chat-minimizado');
+      if (chatbotBox.classList.contains('chat-minimizado')) {
+        btnMinimizar.innerHTML = '＋';
+      } else {
+        btnMinimizar.innerHTML = '−';
+        inputChat.focus();
+      }
+    }
+
+    btnMinimizar.addEventListener('click', toggleChat);
+    headerChat.addEventListener('click', function(e) {
+      if (e.target !== btnMinimizar) toggleChat();
+    });
+
+    btnEnviar.addEventListener('click', enviarMensaje);
+    inputChat.addEventListener('keypress', function (e) {
+      if (e.key === 'Enter') enviarMensaje();
+    });
+
+   function enviarMensaje() {
+      const mensaje = inputChat.value.trim();
+      if (mensaje === '') return;
+
+      const chatCaja = document.getElementById('chat-mensajes');
+      
+     
+      chatCaja.innerHTML += `<div class="mensaje-usuario">👤<strong>Tú:</strong> ${mensaje}</div>`;
+      inputChat.value = '';
+      
+     
+      const idTemporal = "typing-" + Date.now();
+      chatCaja.innerHTML += `<div class="mensaje-ia escribiendo" id="${idTemporal}">            🤖<strong>chat de Soporte:</strong> Escribiendo...</div>`;
+      chatCaja.scrollTop = chatCaja.scrollHeight;
+
+      fetch('/chat/preguntar', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content
+        },
+        body: JSON.stringify({ mensaje: mensaje })
+      })
+      .then(response => response.json())
+      .then(data => {
+        
+    
+        setTimeout(function() {
+          
+          const indicador = document.getElementById(idTemporal);
+          if (indicador) indicador.remove();
+
+          
+          chatCaja.innerHTML += `<div class="mensaje-ia">🤖<strong>chat de Soporte:</strong> ${data.respuesta}</div>`;
+          chatCaja.scrollTop = chatCaja.scrollHeight;
+        }, 5000); 
+
+      })
+      .catch(error => {
+        
+        const indicador = document.getElementById(idTemporal);
+        if (indicador) indicador.remove();
+        chatCaja.innerHTML += `<div class="mensaje-ia">         🤖<strong>chat de Soporte:</strong> Error de conexión.</div>`;
+        chatCaja.scrollTop = chatCaja.scrollHeight;
+      });
+    }
+  });
+</script>

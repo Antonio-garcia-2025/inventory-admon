@@ -1,0 +1,17 @@
+<h1>Asistente Virtual</h1>
+
+<!-- Si existe una respuesta del modelo, la mostramos -->
+<% if @respuesta_del_bot.present? %>
+  <div class="respuesta-ia">
+    <strong>IA:</strong> <%= @respuesta_del_bot %>
+  </div>
+<% end %>
+
+<!-- Formulario para enviar el mensaje al controlador -->
+<%= form_with url: '/chat/preguntar', method: :post, data:{turbo: false}, local: true do |form| %>
+  <div>
+    <%= form.label :mensaje, "Escribe tu pregunta:" %>
+    <%= form.text_field :mensaje, required: true %>
+  </div>
+  <%= form.submit "Enviar" %>
+<% end %>
