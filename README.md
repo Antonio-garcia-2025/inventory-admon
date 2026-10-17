@@ -1,59 +1,30 @@
-A robust inventory management system built with Ruby on Rails, featuring a fully integrated Telegram bot. This application allows registered users to securely bind their Telegram accounts and check their personal product stock and prices in real-time through an interactive Telegram chat.
+# Inventory Admon & AI Chatbot
 
-Features
-Multi-User Architecture: Each user manages and queries their own inventory exclusively.
+*Read this in [Spanish](README.es.md).*
 
-Telegram Bot Integration: Secure webhook communication between Telegram APIs and the Rails backend.
+An e-commerce platform built with Ruby on Rails, powered by a Python Artificial Intelligence microservice for automated customer support.
 
-Account Binding: Users can link their web account to their Telegram chat ID using the /vincular  command.
+## System Architecture
+The project utilizes a microservices architecture to separate business logic from Natural Language Processing (NLP):
+* **Frontend / Main Backend:** Monolith in Ruby on Rails (MVC). Manages the product database, user interface, and shopping cart logic.
+* **AI Microservice:** RESTful API built with FastAPI and hosted on Render.
+* **Machine Learning Engine:** Classification model trained with Scikit-Learn (Logistic Regression + TF-IDF) to predict user intent.
 
-Interactive Menus: Custom Telegram HTML keyboard buttons for quick stock consultation without manually typing commands.
+## Interaction Flow
+1. The user sends a message through the interface (Turbo/Hotwire) in Rails.
+2. `ChatBotService` (Rails) sends an encrypted HTTPS request to the Python microservice.
+3. The **Scikit-Learn** model vectorizes the text, predicts the mathematical intent, and returns it to Rails.
+4. Rails intercepts the intent (e.g., `view_catalog`), queries the PostgreSQL/SQLite database, and dynamically renders the products in the chat.
 
-Floating Widget: A direct floating UI button in the web application that redirects users to the Telegram bot.
+## Technologies Used
+* **Backend:** Ruby 3.x, Rails 7, PostgreSQL/SQLite.
+* **AI & Data Science:** Python 3, FastAPI, Uvicorn, Scikit-Learn, Pandas.
+* **Deployment:** Render (AI Microservice), GitHub (Version Control).
+* **Frontend:** HTML5, CSS3, JavaScript, Turbo (Hotwire).
 
-Tech Stack
-Backend: Ruby on Rails
-
-Database: PostgreSQL
-
-API Requests: HTTParty
-
-Deployment: Render
-
-Setup and Installation
-Clone the repository:
-
-Bash
-git clone [https://github.com/Antonio-garcia-2025/inventary-admon.git](https://github.com/Antonio-garcia-2025/inventary-admon.git)
-cd inventary-admon
-Install dependencies:
-
-Bash
-bundle install
-Database Setup:
-Run the following commands to create the database and run the migrations (including the telegram_chat_id column for users):
-
-Bash
-rails db:create
-rails db:migrate
-Environment Variables:
-You need to set up your Telegram Bot token. Add it to your environment variables in Render, or locally, using:
-
-Plaintext
-TELEGRAM_BOT_TOKEN=your_bot_token_here
-Set up the Webhook:
-To connect your bot to the application, manually visit the following URL in your browser, replacing the placeholders with your actual Bot Token and Render URL:
-https://api.telegram.org/bot<YOUR_BOT_TOKEN>/setWebhook?url=https://<YOUR_RENDER_URL>/telegram_webhook
-
-Telegram Bot Commands
-/start - Displays the welcome message and instructions.
-
-/vincular [your_email@example.com] - Links the current Telegram chat to the specified user account in the database.
-
-/stock (or using the custom keyboard button) - Fetches and displays the user's current inventory stock and prices.
-
-License
-This project is open-source and available under the MIT License.
-
-I invite you to visit and try out the deployment:
-https://shopify-z885.onrender.com/
+## How to run locally
+1. Clone the repository: `git clone https://github.com/Antonio-garcia-2025/inventory-admon.git`
+2. Install Rails gems: `bundle install`
+3. Configure the database: `rails db:migrate db:seed`
+4. Start the server: `rails server`
+*(Note: The AI microservice is deployed in the cloud, so the chat will work immediately with an internet connection).*
