@@ -53,7 +53,7 @@ module Admin
     private
 
     def require_admin!
-      admin_email = 'antonioggguerrero@gmail.com'
+      admin_email = 'admin@admin.com'
       is_admin = (current_user.respond_to?(:admin?) && current_user.admin?) || (current_user.email.to_s.downcase == admin_email.downcase)
 
       return if is_admin
