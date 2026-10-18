@@ -16,17 +16,20 @@
     </div>
   <% end %>
   
-  <div style="margin-bottom: 16px;">
-  <%= f.label :image, "Cambiar Foto del Producto:", style: "display: block; font-weight: 600; margin-bottom: 6px; font-size: 0.9em;" %>
-  <% if @product.image.attached? %>
-    <div style="margin-bottom: 8px;">
-      <%= image_tag @product.image, style: "width: 70px; height: 70px; object-fit: cover; border-radius: 6px; border: 1px solid #dadce0;" %>
-    </div>
-  <% end %>
-  <%= f.file_field :image, accept: "image/png,image/jpeg,image/webp", style: "width: 100%; font-size: 0.9em;" %>
-</div>
-
   <%= form_with model: @product, local: true do |f| %>
+    
+    <div style="margin-bottom: 16px;">
+      <%= f.label :image, "Cambiar Foto del Producto:", style: "display: block; font-weight: 600; margin-bottom: 6px; font-size: 0.9em;" %>
+      
+      <% if @product.image.attached? %>
+        <div style="margin-bottom: 8px;">
+          <%= image_tag @product.image, style: "width: 70px; height: 70px; object-fit: cover; border-radius: 6px; border: 1px solid #dadce0;" %>
+        </div>
+      <% end %>
+      
+      <%= f.file_field :image, accept: "image/png,image/jpeg,image/webp", style: "width: 100%; font-size: 0.9em;" %>
+    </div>
+
     <div style="margin-bottom: 15px;">
     <%= f.label :name, "Nombre del producto:", style: "font-weight: bold;" %><br>
     <%= f.text_field :name, required: true, style: "width: 100%; padding: 8px; margin-top: 5px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;" %>
@@ -46,7 +49,6 @@
     <%= f.label :stock, "Cantidad en Stock:", style: "font-weight: bold;" %><br>
     <%= f.number_field :stock, min: 0, step: 1, required: true, style: "width: 100%; padding: 8px; margin-top: 5px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;" %>
     </div>
-
 
     <div style="display: flex; gap: 10px;">
       <%= f.submit "Guardar Cambios", style: "background-color: #28a745; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-size: 1em;" %>
