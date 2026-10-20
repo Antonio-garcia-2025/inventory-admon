@@ -1,40 +1,66 @@
-<div style="display: flex; flex-direction: column; gap: 24px; max-width: 1200px; margin: 0 auto;">
+<div style="display: flex; flex-direction: column; gap: 24px; max-width: 1200px; margin: 0 auto; padding-bottom: 40px;">
   
+  <!-- ENCABEZADO Y BOTÓN DE RETORNO -->
   <div style="display: flex; justify-content: space-between; align-items: center;">
     <div>
-      <h1 style="margin: 0; color: #202124; font-size: 1.6em;">🛡️ Panel Global de Administración</h1>
-      <p style="margin: 4px 0 0 0; color: #5f6368; font-size: 0.95em;">Métricas financieras globales, inventario y cuentas de vendedores</p>
+      <h1 style="margin: 0; color: #202124; font-size: 1.6em;">🛡️ Panel Global de Administración (Estilo Power BI)</h1>
+      <p style="margin: 4px 0 0 0; color: #5f6368; font-size: 0.95em;">Métricas financieras globales, inventario y análisis visual por vendedor</p>
     </div>
-    <%= link_to "⬅ Volver a mi Inventario", root_path, style: "background-color: #f1f3f4; color: #202124; text-decoration: none; padding: 9px 16px; border-radius: 6px; font-weight: 600; border: 1px solid #dadce0; font-size: 0.9em;" %>
+    <div>
+      <%= link_to "⬅ Volver a mi Inventario", root_path, style: "background-color: #f1f3f4; color: #202124; text-decoration: none; padding: 9px 16px; border-radius: 6px; font-weight: 600; border: 1px solid #dadce0; font-size: 0.9em;" %>
+    </div>
   </div>
 
-  <!-- TARJETAS DE MÉTRICAS GLOBALES -->
+  <!-- TARJETAS DE MÉTRICAS GLOBALES (KPIs) -->
   <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px;">
+    <!-- Ingresos -->
     <div style="background: white; border: 1px solid #ceead6; border-left: 5px solid #137333; padding: 18px 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.04);">
-      <span style="font-size: 0.8em; color: #137333; font-weight: bold; text-transform: uppercase;">💰 Ingresos Totales Plataforma</span>
+      <span style="font-size: 0.8em; color: #137333; font-weight: bold; text-transform: uppercase;">💰 Ingresos Totales</span>
       <h2 style="margin: 8px 0 0 0; color: #137333; font-size: 1.8em;"><%= number_to_currency(@total_global_revenue || 0) %></h2>
     </div>
 
+    <!-- Ventas -->
     <div style="background: white; border: 1px solid #feefc3; border-left: 5px solid #f2994a; padding: 18px 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.04);">
       <span style="font-size: 0.8em; color: #b06000; font-weight: bold; text-transform: uppercase;">🧾 Ventas Concretadas</span>
-      <h2 style="margin: 8px 0 0 0; color: #b06000; font-size: 1.8em;"><%= @total_global_sales %> transacciones</h2>
+      <h2 style="margin: 8px 0 0 0; color: #b06000; font-size: 1.8em;"><%= @total_global_sales %></h2>
     </div>
 
+    <!-- Stock -->
     <div style="background: white; border: 1px solid #d2e3fc; border-left: 5px solid #1a73e8; padding: 18px 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.04);">
       <span style="font-size: 0.8em; color: #1a73e8; font-weight: bold; text-transform: uppercase;">📦 Stock Total Disponible</span>
-      <h2 style="margin: 8px 0 0 0; color: #1a73e8; font-size: 1.8em;"><%= @total_inventory_stock %> unidades</h2>
+      <h2 style="margin: 8px 0 0 0; color: #1a73e8; font-size: 1.8em;"><%= @total_inventory_stock %></h2>
     </div>
 
+    <!-- Vendedores -->
     <div style="background: white; border: 1px solid #e9d2fd; border-left: 5px solid #8430ce; padding: 18px 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.04);">
       <span style="font-size: 0.8em; color: #8430ce; font-weight: bold; text-transform: uppercase;">👥 Vendedores Activos</span>
       <h2 style="margin: 8px 0 0 0; color: #8430ce; font-size: 1.8em;"><%= @total_sellers_count %></h2>
     </div>
   </div>
 
-  <!-- TABLA DE VENDEDORES -->
+  <!-- SECCIÓN DE GRÁFICAS ESTILO POWER BI -->
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(450px, 1fr)); gap: 20px;">
+    <!-- Gráfica 1: Ingresos por Vendedor -->
+    <div style="background: white; border: 1px solid #dadce0; border-radius: 8px; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.04);">
+      <h3 style="margin: 0 0 15px 0; color: #202124; font-size: 1.1em;">📊 Ingresos Generados por Vendedor ($)</h3>
+      <div style="position: relative; height: 280px;">
+        <canvas id="revenueChart"></canvas>
+      </div>
+    </div>
+
+    <!-- Gráfica 2: Stock de Productos por Vendedor -->
+    <div style="background: white; border: 1px solid #dadce0; border-radius: 8px; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.04);">
+      <h3 style="margin: 0 0 15px 0; color: #202124; font-size: 1.1em;">📦 Distribución de Stock en Almacén</h3>
+      <div style="position: relative; height: 280px;">
+        <canvas id="stockChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECCIÓN: TABLA DE RENDIMIENTO POR VENDEDOR -->
   <div style="background: white; border: 1px solid #dadce0; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.04);">
     <div style="padding: 16px 22px; border-bottom: 1px solid #ebebeb;">
-      <h3 style="margin: 0; color: #202124; font-size: 1.15em;">Rendimiento por Vendedor</h3>
+      <h3 style="margin: 0; color: #202124; font-size: 1.15em;">Detalle de Rendimiento por Vendedor</h3>
     </div>
 
     <table border="0" cellpadding="14" style="border-collapse: collapse; width: 100%; text-align: left;">
@@ -113,3 +139,71 @@
   </div>
 
 </div>
+
+<!-- CARGAR CHART.JS DESDE CDN E INICIALIZAR LAS GRÁFICAS -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  document.addEventListener("turbo:load", function() {
+    renderCharts();
+  });
+
+  // Por si no usa Turbo en alguna recarga tradicional
+  if (document.readyState === "complete") {
+    renderCharts();
+  } else {
+    window.addEventListener("load", renderCharts);
+  }
+
+  function renderCharts() {
+    // Extraer datos de los vendedores de forma segura desde Ruby hacia JavaScript
+    const sellersData = <%= raw @sellers.to_json %>;
+    
+    const labels = sellersData.map(s => s.email.split('@')[0]); // Usar la primera parte del correo como etiqueta
+    const revenues = sellersData.map(s => s.total_revenue);
+    const stocks = sellersData.map(s => s.total_stock);
+
+    // 1. Gráfica de Ingresos (Barras)
+    const ctxRevenue = document.getElementById('revenueChart');
+    if (ctxRevenue) {
+      if (window.myRevenueChart) window.myRevenueChart.destroy(); // Evitar duplicados con Turbo
+      window.myRevenueChart = new Chart(ctxRevenue, {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Ingresos ($)',
+            data: revenues,
+            backgroundColor: '#137333',
+            borderRadius: 4
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } }
+        }
+      });
+    }
+
+    // 2. Gráfica de Stock (Dona)
+    const ctxStock = document.getElementById('stockChart');
+    if (ctxStock) {
+      if (window.myStockChart) window.myStockChart.destroy();
+      window.myStockChart = new Chart(ctxStock, {
+        type: 'doughnut',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Unidades en Stock',
+            data: stocks,
+            backgroundColor: ['#1a73e8', '#8430ce', '#f2994a', '#137333', '#d93025', '#5f6368']
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false
+        }
+      });
+    }
+  }
+</script>

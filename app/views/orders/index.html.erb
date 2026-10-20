@@ -2,7 +2,7 @@
 
   <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
     <h1 style="margin: 0; color: #202124; font-size: 1.6em; font-weight: 800;">📦 Mis Compras y Pedidos</h1>
-    <%= link_to "🏪 Seguir Comprando", store_path, class: "btn-primary", style: "font-size: 0.85em; padding: 8px 16px;" %>
+    <%= link_to "🏪 Seguir Comprando", store_path, style: "font-size: 0.85em; padding: 8px 16px;", class: "btn-primary" %>
   </div>
 
   <% if @orders.any? %>
@@ -55,7 +55,7 @@
   <% else %>
     <div style="background: white; border: 1px dashed #dadce0; border-radius: 10px; padding: 50px 20px; text-align: center;">
       <p style="color: #5f6368; font-size: 1.05em; margin-bottom: 16px;">Aún no has realizado ninguna compra.</p>
-      <%= link_to "🛍️ Ir a la Tienda a Explorar", store_path, class: "btn-primary", style: "display: inline-block;" %>
+      <%= link_to "🛍️ Ir a la Tienda a Explorar", store_path, style: "display: inline-block;", class: "btn-primary" %>
     </div>
   <% end %>
 

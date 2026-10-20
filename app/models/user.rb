@@ -4,7 +4,6 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
 
-  has_many :products
   has_many :products, dependent: :destroy
   has_many :categories, dependent: :destroy
   has_many :orders, dependent: :destroy
@@ -22,7 +21,7 @@ class User < ApplicationRecord
   # Ingresos acumulados reales
   def total_revenue
     items_total = sold_items.includes(:product).sum { |item| (item.quantity || 0) * (item.unit_price || 0.0) }
-    return items_total if items_total > 0
+    return items_total if items_total.positive?
 
     # Respaldo si existen ventas guardadas en la tabla 'sales'
     sales.sum(:price) || 0.0
@@ -31,7 +30,7 @@ class User < ApplicationRecord
   # Total de piezas vendidas
   def total_pieces_sold
     items_count = sold_items.sum(:quantity)
-    return items_count if items_count > 0
+    return items_count if items_count.positive?
 
     sales.count
   end
@@ -43,6 +42,7 @@ class User < ApplicationRecord
 
   def seller_rating
     return 0.0 if received_reviews.empty?
+
     received_reviews.average(:rating).to_f.round(1)
   end
 

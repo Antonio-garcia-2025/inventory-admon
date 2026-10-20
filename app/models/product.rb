@@ -18,6 +18,7 @@ class Product < ApplicationRecord
   # Calificación numérica promedio
   def average_rating
     return 0.0 if reviews.empty?
+
     reviews.average(:rating).to_f.round(1)
   end
 

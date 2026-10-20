@@ -29,9 +29,6 @@ Rails.application.routes.draw do
   resources :orders, only: [:index, :show]
 
 
-  # Ruta para ver la página
-  get '/chat', to: 'chat#index', as: 'chat'
-  
   # Ruta para enviar el mensaje
   post '/chat/preguntar', to: 'chat#preguntar', as: 'preguntar_path'
 end

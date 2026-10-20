@@ -10,8 +10,8 @@ class OrdersController < ApplicationController
 
   # GET /orders/:id (Detalle de un pedido específico)
   def show
-    @order = current_user.orders.find(params[:id])
+    @order = current_user.orders.find(params.expect(:id))
   rescue ActiveRecord::RecordNotFound
-    redirect_to orders_path, alert: "Pedido no encontrado."
+    redirect_to orders_path, alert: 'Pedido no encontrado.'
   end
 end

@@ -20,7 +20,7 @@ class CartsController < ApplicationController
     nueva_cantidad = (cart_item.persisted? ? cart_item.quantity : 0) + quantity
 
     if nueva_cantidad > product.stock
-      redirect_back fallback_location: store_path, alert: "No hay suficiente stock disponible (disponibles: #{product.stock})."
+      redirect_back_or_to(store_path, alert: "No hay suficiente stock disponible (disponibles: #{product.stock}).")
       return
     end
 
@@ -31,9 +31,9 @@ class CartsController < ApplicationController
   end
 
   def remove
-    cart_item = current_cart.cart_items.find(params[:id])
+    cart_item = current_cart.cart_items.find(params.expect(:id))
     cart_item.destroy
-    redirect_to cart_path, notice: "Producto eliminado del carrito."
+    redirect_to cart_path, notice: 'Producto eliminado del carrito.'
   end
 
   def checkout
@@ -41,7 +41,7 @@ class CartsController < ApplicationController
     items = cart.cart_items.includes(:product)
 
     if items.empty?
-      redirect_to store_path, alert: "Tu carrito está vacío."
+      redirect_to store_path, alert: 'Tu carrito está vacío.'
       return
     end
 
@@ -49,15 +49,13 @@ class CartsController < ApplicationController
       # 1. Crear orden para el comprador
       order = current_user.orders.create!(
         total_price: cart.total_price,
-        status: "completado"
+        status: 'completado'
       )
 
       items.each do |item|
         product = item.product
 
-        if product.stock < item.quantity
-          raise ActiveRecord::Rollback, "Stock insuficiente para #{product.name}."
-        end
+        raise ActiveRecord::Rollback, "Stock insuficiente para #{product.name}." if product.stock < item.quantity
 
         # 2. Descontar stock del producto
         product.update!(stock: product.stock - item.quantity)
@@ -71,18 +69,18 @@ class CartsController < ApplicationController
 
         # 4. Registrar venta para el vendedor
         seller = product.user
-        if seller.present?
-          item.quantity.times do
-            seller.sales.create!(product: product, price: product.price)
-          end
+        next if seller.blank?
+
+        item.quantity.times do
+          seller.sales.create!(product: product, price: product.price)
         end
       end
 
       # 5. Vaciar carrito tras la compra exitosa
       cart.cart_items.destroy_all
-      redirect_to orders_path, notice: "🎉 ¡Compra procesada exitosamente! Stock actualizado y venta registrada."
+      redirect_to orders_path, notice: '🎉 ¡Compra procesada exitosamente! Stock actualizado y venta registrada.'
     end
-  rescue => e
+  rescue StandardError => e
     redirect_to cart_path, alert: "Hubo un problema al procesar la compra: #{e.message}"
   end
 

@@ -13,5 +13,5 @@ class Cart < ApplicationRecord
   def total_items_count
     cart_items.sum(:quantity) || 0
   end
-  alias_method :total_items, :total_items_count
+  alias total_items total_items_count
 end
